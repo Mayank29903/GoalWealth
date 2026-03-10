@@ -27,7 +27,7 @@ const AssumptionControls = ({ goal, onFieldChange }) => {
             aria-label="Expected inflation rate"
           />
           <p id="inflation-help" className="text-xs text-neutral_grey mt-1">
-            Average annual increase in cost of goods.
+            Inflation assumption: used only to inflate present goal cost into future value.
           </p>
         </div>
         <div>
@@ -47,7 +47,7 @@ const AssumptionControls = ({ goal, onFieldChange }) => {
             aria-label="Expected return rate"
           />
           <p id="return-help" className="text-xs text-neutral_grey mt-1">
-            Estimated annual growth of investment.
+            Return assumption: used only for investment growth to calculate monthly SIP.
           </p>
         </div>
       </div>

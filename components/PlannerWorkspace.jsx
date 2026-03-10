@@ -12,6 +12,7 @@ import AssumptionControls from '@/components/AssumptionControls';
 import Disclaimer from '@/components/Disclaimer';
 import GoalCard from '@/components/GoalCard';
 import InvestmentTable from '@/components/InvestmentTable';
+import CalculationMethodology from '@/components/CalculationMethodology';
 import useCalculator from '@/hooks/useCalculator';
 import { formatCurrency } from '@/utils/financialHelpers';
 
@@ -40,6 +41,18 @@ const PlannerWorkspace = ({ onBack }) => {
   const onGoalFieldChange = (field, value) => {
     if (!selectedGoal) return;
     updateGoal(selectedGoal.id, field, value);
+  };
+
+  const handleAddGoal = () => {
+    addGoal();
+
+    window.setTimeout(() => {
+      const goalDetailsSection = document.getElementById('goal-details-section');
+      goalDetailsSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      const goalNameInput = document.getElementById('goalName');
+      goalNameInput?.focus();
+    }, 80);
   };
 
   const downloadFinancialPlan = async () => {
@@ -142,7 +155,7 @@ const PlannerWorkspace = ({ onBack }) => {
         <article className="min-w-0 rounded-lg border border-[#9190904d] bg-white p-4 shadow-sm">
           <p className="text-sm text-text_secondary">Active Goal</p>
           <p className="mt-1 text-xl font-semibold text-text_primary break-words">
-            {selectedGoal?.goalName}
+            {selectedGoal?.goalName?.trim() || 'Untitled Goal'}
           </p>
         </article>
       </section>
@@ -154,7 +167,7 @@ const PlannerWorkspace = ({ onBack }) => {
               <h2 className="text-xl font-bold text-primary_blue">Financial Goals</h2>
               <button
                 type="button"
-                onClick={addGoal}
+                onClick={handleAddGoal}
                 className="inline-flex items-center gap-2 rounded-md bg-primary_blue px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#224c87e6]"
                 aria-label="Add financial goal"
               >
@@ -186,7 +199,7 @@ const PlannerWorkspace = ({ onBack }) => {
           <div className="flex flex-col gap-4 rounded-lg border border-[#9190904d] bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <h2 className="text-xl font-bold text-primary_blue break-words">
-                {selectedGoal?.goalName} Plan
+                {(selectedGoal?.goalName?.trim() || 'Untitled Goal')} Plan
               </h2>
               <p className="text-sm text-text_secondary">
                 Projection view with growth chart, scenarios, and timeline.
@@ -206,7 +219,12 @@ const PlannerWorkspace = ({ onBack }) => {
 
           {selectedGoalResult && (
             <>
-              <ResultsCard results={selectedGoalResult} goalName={selectedGoal.goalName} />
+              <ResultsCard
+                results={selectedGoalResult}
+                goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
+              />
+
+              <CalculationMethodology goal={selectedGoal} results={selectedGoalResult} />
 
               <div className="rounded-lg border border-[#9190904d] bg-card_background p-6 shadow-sm">
                 <h2 className="mb-4 text-xl font-bold text-primary_blue">Investment Growth Projection</h2>

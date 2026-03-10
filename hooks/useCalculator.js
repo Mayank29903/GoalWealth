@@ -16,11 +16,11 @@ const clampToSafeNumber = (value, min, max) => {
   return clamp(safeValue, min, max);
 };
 
-const createGoal = (index = 1) => ({
+const createGoal = ({ prefill = false, index = 1 } = {}) => ({
   id: `goal-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-  goalName: index === 1 ? 'Child Education' : `Goal ${index}`,
-  currentCost: 1000000,
-  yearsToGoal: 10,
+  goalName: prefill ? (index === 1 ? 'Child Education' : `Goal ${index}`) : '',
+  currentCost: prefill ? 1000000 : '',
+  yearsToGoal: prefill ? 10 : '',
   inflationRate: 6,
   expectedReturn: 12,
 });
@@ -33,7 +33,7 @@ const sanitizeGoalInputs = (goal) => ({
 });
 
 const useCalculator = () => {
-  const [goals, setGoals] = useState(() => [createGoal(1)]);
+  const [goals, setGoals] = useState(() => [createGoal({ prefill: false, index: 1 })]);
   const [selectedGoalId, setSelectedGoalId] = useState(goals[0].id);
 
   const goalPlans = useMemo(
@@ -95,7 +95,7 @@ const useCalculator = () => {
   }, [scenarioReturns, selectedGoal]);
 
   const addGoal = () => {
-    const newGoal = createGoal(goals.length + 1);
+    const newGoal = createGoal({ prefill: false, index: goals.length + 1 });
     setGoals((prev) => [...prev, newGoal]);
     setSelectedGoalId(newGoal.id);
   };

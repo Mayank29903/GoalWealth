@@ -9,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="font-sans bg-background_light text-text_primary antialiased">
+      <body className="min-h-screen flex flex-col font-sans bg-background_light text-text_primary antialiased">
         <header className="bg-primary_blue text-white py-6 shadow-md">
           <div className="container mx-auto px-4">
             <h1 className="text-2xl md:text-3xl font-bold tracking-wide">
@@ -20,10 +20,10 @@ export default function RootLayout({ children }) {
             </p>
           </div>
         </header>
-        <main className="container mx-auto px-4 py-8 min-h-screen">
+        <main className="container mx-auto w-full flex-1 px-4 py-8">
           {children}
         </main>
-        <footer className="bg-text_primary text-white py-6 mt-12">
+        <footer className="border-t border-[#ffffff1f] bg-text_primary py-6 text-white">
           <div className="container mx-auto px-4 text-center text-sm">
             <p>&copy; {new Date().getFullYear()} GoalWealth Planner. For educational purposes only.</p>
           </div>

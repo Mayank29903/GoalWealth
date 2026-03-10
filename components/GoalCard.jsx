@@ -12,6 +12,9 @@ const GoalCard = ({
   onSelect,
   onRemove,
 }) => {
+  const displayGoalName = goal.goalName?.trim() || 'Untitled Goal';
+  const displayHorizon = goal.yearsToGoal ? `${goal.yearsToGoal} year horizon` : 'Set timeline';
+
   return (
     <article
       className={clsx(
@@ -20,7 +23,7 @@ const GoalCard = ({
           ? 'border-primary_blue bg-[#224c870d] shadow-sm'
           : 'border-[#9190904d] bg-white hover:border-[#224c8780]'
       )}
-      aria-label={`${goal.goalName} goal card`}
+      aria-label={`${displayGoalName} goal card`}
     >
       <div className="flex items-start justify-between gap-3">
         <button
@@ -34,10 +37,10 @@ const GoalCard = ({
           </span>
           <span className="min-w-0">
             <span className="block truncate text-sm font-semibold text-text_primary">
-              {goal.goalName || 'Untitled Goal'}
+              {displayGoalName}
             </span>
             <span className="block text-xs text-text_secondary">
-              {goal.yearsToGoal} year horizon
+              {displayHorizon}
             </span>
           </span>
         </button>

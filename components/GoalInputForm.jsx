@@ -7,7 +7,11 @@ const GoalInputForm = ({ goal, onFieldChange }) => {
   if (!goal) return null;
 
   return (
-    <section className="bg-card_background p-6 rounded-lg shadow-sm border border-[#9190904d]" aria-label="Goal Details">
+    <section
+      id="goal-details-section"
+      className="bg-card_background p-6 rounded-lg shadow-sm border border-[#9190904d]"
+      aria-label="Goal Details"
+    >
       <h2 className="text-xl font-bold text-primary_blue mb-4">Goal Details</h2>
       <div className="space-y-4">
         <div>
