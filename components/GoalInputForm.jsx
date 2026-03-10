@@ -3,16 +3,11 @@
 import React from 'react';
 import { sanitizeNumber } from '@/utils/financialHelpers';
 
-const GoalInputForm = ({
-  goalName,
-  setGoalName,
-  currentCost,
-  setCurrentCost,
-  yearsToGoal,
-  setYearsToGoal,
-}) => {
+const GoalInputForm = ({ goal, onFieldChange }) => {
+  if (!goal) return null;
+
   return (
-    <section className="bg-card_background p-6 rounded-lg shadow-sm border border-neutral_grey/30" aria-label="Goal Details">
+    <section className="bg-card_background p-6 rounded-lg shadow-sm border border-[#9190904d]" aria-label="Goal Details">
       <h2 className="text-xl font-bold text-primary_blue mb-4">Goal Details</h2>
       <div className="space-y-4">
         <div>
@@ -22,10 +17,11 @@ const GoalInputForm = ({
           <input
             id="goalName"
             type="text"
-            value={goalName}
-            onChange={(e) => setGoalName(e.target.value)}
-            className="w-full p-2 border border-neutral_grey/50 rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
+            value={goal.goalName}
+            onChange={(e) => onFieldChange('goalName', e.target.value)}
+            className="w-full p-2 border border-[#91909080] rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
             placeholder="e.g., Retirement, House, Education"
+            aria-label="Goal name"
           />
         </div>
         <div>
@@ -36,9 +32,11 @@ const GoalInputForm = ({
             id="currentCost"
             type="number"
             min="0"
-            value={currentCost}
-            onChange={(e) => setCurrentCost(sanitizeNumber(e.target.value))}
-            className="w-full p-2 border border-neutral_grey/50 rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
+            max="10000000000000"
+            value={goal.currentCost}
+            onChange={(e) => onFieldChange('currentCost', sanitizeNumber(e.target.value))}
+            className="w-full p-2 border border-[#91909080] rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
+            aria-label="Present cost of goal"
           />
         </div>
         <div>
@@ -50,9 +48,10 @@ const GoalInputForm = ({
             type="number"
             min="1"
             max="50"
-            value={yearsToGoal}
-            onChange={(e) => setYearsToGoal(sanitizeNumber(e.target.value))}
-            className="w-full p-2 border border-neutral_grey/50 rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
+            value={goal.yearsToGoal}
+            onChange={(e) => onFieldChange('yearsToGoal', sanitizeNumber(e.target.value))}
+            className="w-full p-2 border border-[#91909080] rounded focus:ring-2 focus:ring-primary_blue focus:border-primary_blue transition-colors text-text_primary"
+            aria-label="Years to achieve goal"
           />
         </div>
       </div>
@@ -61,3 +60,4 @@ const GoalInputForm = ({
 };
 
 export default GoalInputForm;
+

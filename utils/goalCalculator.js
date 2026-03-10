@@ -1,69 +1,71 @@
-const calculateInflatedValue = (presentCost, inflationRate, years) => {
+import { buildGrowthChartData, buildTimelineData } from '@/lib/chartData';
+
+export const calculateInflatedValue = (presentCost, inflationRate, years) => {
   const rate = inflationRate / 100;
   return presentCost * Math.pow(1 + rate, years);
 };
 
-const calculateRequiredSIP = (futureValue, annualReturn, years) => {
-  const monthlyRate = (annualReturn / 100) / 12;
-  const totalMonths = years * 12;
+export const calculateRequiredSIP = (futureValue, annualReturn, years) => {
+  const monthlyRate = annualReturn / 1200;
+  const totalMonths = Math.max(1, Math.round(years * 12));
 
-  if (monthlyRate === 0) return futureValue / totalMonths;
+  if (monthlyRate <= 0) return futureValue / totalMonths;
 
-  const numerator = futureValue * monthlyRate;
-  const denominator =
-    (Math.pow(1 + monthlyRate, totalMonths) - 1) * (1 + monthlyRate);
-
-  return numerator / denominator;
+  const growthFactor = Math.pow(1 + monthlyRate, totalMonths);
+  const denominator = ((growthFactor - 1) / monthlyRate) * (1 + monthlyRate);
+  return denominator === 0 ? 0 : futureValue / denominator;
 };
 
-const generateGrowthData = (monthlySIP, annualReturn, years) => {
-  const monthlyRate = (annualReturn / 100) / 12;
-  const data = [];
-  
-  let accumulatedValue = 0;
-  let totalInvested = 0;
+export const generateYearlyBreakdown = (monthlySIP, annualReturn, years) => {
+  const monthlyRate = annualReturn / 1200;
+  const rows = [];
 
-  for (let i = 1; i <= years; i++) {
-    const months = i * 12;
-    accumulatedValue =
-      monthlySIP *
-      ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
-      (1 + monthlyRate);
-    
-    totalInvested = monthlySIP * months;
+  for (let year = 1; year <= years; year += 1) {
+    const months = year * 12;
+    const totalInvested = monthlySIP * months;
 
-    data.push({
-      year: i,
-      invested: Math.round(totalInvested),
-      value: Math.round(accumulatedValue),
+    let expectedValue = totalInvested;
+    if (monthlyRate > 0) {
+      expectedValue =
+        monthlySIP *
+        ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
+        (1 + monthlyRate);
+    }
+
+    rows.push({
+      year,
+      totalInvested: Math.round(totalInvested),
+      expectedValue: Math.round(expectedValue),
+      estimatedGain: Math.round(expectedValue - totalInvested),
     });
   }
 
-  return data;
+  return rows;
 };
 
 export const calculateGoalPlan = (inputs) => {
   const { currentCost, years, inflationRate, expectedReturn } = inputs;
+  const safeYears = Math.max(1, Math.round(years || 1));
 
   const inflatedGoalValue = calculateInflatedValue(
     currentCost,
     inflationRate,
-    years
+    safeYears
   );
 
   const requiredMonthlySIP = calculateRequiredSIP(
     inflatedGoalValue,
     expectedReturn,
-    years
+    safeYears
   );
 
-  const totalInvestedAmount = requiredMonthlySIP * years * 12;
+  const totalInvestedAmount = requiredMonthlySIP * safeYears * 12;
   const estimatedReturns = inflatedGoalValue - totalInvestedAmount;
 
-  const growthData = generateGrowthData(
+  const yearlyBreakdown = generateYearlyBreakdown(
     requiredMonthlySIP,
     expectedReturn,
-    years
+    safeYears
   );
 
   return {
@@ -71,6 +73,13 @@ export const calculateGoalPlan = (inputs) => {
     requiredMonthlySIP,
     totalInvestedAmount,
     estimatedReturns,
-    growthData,
+    yearlyBreakdown,
+    growthData: buildGrowthChartData(yearlyBreakdown),
+    timelineData: buildTimelineData({
+      years: safeYears,
+      currentCost,
+      inflatedGoalValue,
+      yearlyBreakdown,
+    }),
   };
 };

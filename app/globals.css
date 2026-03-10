@@ -1,20 +1,29 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary_blue: #224c87;
+  --color-accent_red: #da3832;
+  --color-neutral_grey: #919090;
+  --color-text_primary: #1e293b;
+  --color-text_secondary: #475569;
+  --color-card_background: #f8fafc;
+  --color-background_light: #eef4fa;
+  --font-sans: "Montserrat", "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+}
+
 :root {
-  --foreground-rgb: 30, 41, 59;
-  --background-start-rgb: 248, 250, 252;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 30 41 59;
+  --background-rgb: 244 248 252;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  font-family: "Montserrat", Arial, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(34, 76, 135, 0.12), transparent 35%),
+    radial-gradient(circle at 90% 0%, rgba(218, 56, 50, 0.1), transparent 30%),
+    rgb(var(--background-rgb));
+  font-family: var(--font-sans);
+  min-height: 100vh;
 }
 
 ::-webkit-scrollbar {
@@ -36,6 +45,11 @@ body {
 }
 
 *:focus-visible {
-  outline: 2px solid #224c87;
+  outline: 3px solid #224c87;
   outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(34, 76, 135, 0.2);
+  color: #111827;
 }

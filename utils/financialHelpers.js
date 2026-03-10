@@ -1,13 +1,17 @@
 export const formatCurrency = (amount) => {
+  const safeAmount = Number.isFinite(amount) ? amount : 0;
+
   return new Intl.NumberFormat('en-IN', {
-    style: 'decimal',
+    style: 'currency',
+    currency: 'INR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  }).format(amount);
+  }).format(safeAmount);
 };
 
 export const formatPercentage = (rate) => {
-  return `${rate.toFixed(2)}%`;
+  const safeRate = Number.isFinite(rate) ? rate : 0;
+  return `${safeRate.toFixed(2)}%`;
 };
 
 export const sanitizeNumber = (value) => {

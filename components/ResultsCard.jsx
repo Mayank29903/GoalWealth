@@ -8,30 +8,30 @@ const ResultsCard = ({ results, goalName }) => {
       <p className="text-sm mb-6 opacity-75">Based on your inputs and assumptions</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white/10 p-4 rounded backdrop-blur-sm">
+        <div className="min-w-0 bg-[#ffffff1a] p-4 rounded backdrop-blur-sm">
           <p className="text-sm opacity-80 mb-1">Required Monthly Investment</p>
-          <p className="text-3xl font-bold tracking-tight">
+          <p className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight break-all [overflow-wrap:anywhere]">
             {formatCurrency(results.requiredMonthlySIP)}
           </p>
         </div>
         
-        <div className="bg-white/10 p-4 rounded backdrop-blur-sm">
+        <div className="min-w-0 bg-[#ffffff1a] p-4 rounded backdrop-blur-sm">
           <p className="text-sm opacity-80 mb-1">Future Goal Value</p>
-          <p className="text-3xl font-bold tracking-tight">
+          <p className="text-2xl sm:text-3xl font-bold leading-tight tracking-tight break-all [overflow-wrap:anywhere]">
             {formatCurrency(results.inflatedGoalValue)}
           </p>
         </div>
 
-        <div className="bg-white/10 p-4 rounded backdrop-blur-sm">
+        <div className="min-w-0 bg-[#ffffff1a] p-4 rounded backdrop-blur-sm">
           <p className="text-sm opacity-80 mb-1">Total Amount Invested</p>
-          <p className="text-xl font-semibold">
+          <p className="text-xl font-semibold leading-tight break-all [overflow-wrap:anywhere]">
             {formatCurrency(results.totalInvestedAmount)}
           </p>
         </div>
 
-        <div className="bg-white/10 p-4 rounded backdrop-blur-sm">
+        <div className="min-w-0 bg-[#ffffff1a] p-4 rounded backdrop-blur-sm">
           <p className="text-sm opacity-80 mb-1">Estimated Returns</p>
-          <p className="text-xl font-semibold text-accent_red bg-white/20 inline-block px-2 rounded">
+          <p className="text-xl font-semibold text-accent_red bg-[#ffffff33] inline-block max-w-full px-2 rounded leading-tight break-all [overflow-wrap:anywhere]">
             {formatCurrency(results.estimatedReturns)}
           </p>
         </div>
