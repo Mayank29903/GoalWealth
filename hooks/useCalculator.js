@@ -16,6 +16,73 @@ const clampToSafeNumber = (value, min, max) => {
   return clamp(safeValue, min, max);
 };
 
+const buildGoalInsights = ({ goal, plan }) => {
+  if (!goal || !plan) return null;
+
+  const currentCost = sanitizeNumber(goal.currentCost);
+  const yearsToGoal = clampToSafeNumber(goal.yearsToGoal, 1, MAX_YEARS);
+  const inflationRate = clampToSafeNumber(goal.inflationRate, 0, MAX_INFLATION_RATE);
+  const expectedReturn = clampToSafeNumber(goal.expectedReturn, 0, MAX_RATE);
+
+  const realReturn =
+    (((1 + expectedReturn / 100) / (1 + inflationRate / 100)) - 1) * 100;
+  const annualSIP = plan.requiredMonthlySIP * 12;
+  const goalGrowthMultiple =
+    currentCost > 0 ? plan.inflatedGoalValue / currentCost : 0;
+  const contributionShare =
+    plan.inflatedGoalValue > 0
+      ? (plan.totalInvestedAmount / plan.inflatedGoalValue) * 100
+      : 0;
+
+  const horizonBand =
+    yearsToGoal <= 5 ? 'Short Horizon' : yearsToGoal <= 12 ? 'Medium Horizon' : 'Long Horizon';
+
+  let guidanceTone = 'Balanced';
+  let guidanceMessage =
+    'Assumptions are reasonably balanced for long-term goal planning.';
+
+  if (realReturn <= 0) {
+    guidanceTone = 'Challenging';
+    guidanceMessage =
+      'Expected return is not beating inflation. SIP may remain high unless timeline or assumptions change.';
+  } else if (realReturn > 0 && realReturn < 2) {
+    guidanceTone = 'Conservative';
+    guidanceMessage =
+      'Real return margin is modest. Consider reviewing timeline flexibility and contribution capacity.';
+  } else if (yearsToGoal <= 4) {
+    guidanceTone = 'Tight Timeline';
+    guidanceMessage =
+      'Goal horizon is short, so required SIP may be aggressive even with good returns.';
+  }
+
+  return {
+    realReturn,
+    annualSIP,
+    goalGrowthMultiple,
+    contributionShare,
+    horizonBand,
+    guidanceTone,
+    guidanceMessage,
+  };
+};
+
+const validateGoalInputs = (goal) => {
+  const goalName = goal?.goalName?.trim() || '';
+  const currentCost = sanitizeNumber(goal?.currentCost);
+  const yearsToGoal = sanitizeNumber(goal?.yearsToGoal);
+
+  const hasName = goalName.length > 0;
+  const hasCurrentCost = currentCost > 0;
+  const hasTimeline = yearsToGoal >= 1;
+
+  return {
+    hasName,
+    hasCurrentCost,
+    hasTimeline,
+    isComplete: hasName && hasCurrentCost && hasTimeline,
+  };
+};
+
 const createGoal = ({ prefill = false, index = 1 } = {}) => ({
   id: `goal-${Date.now()}-${Math.random().toString(16).slice(2)}`,
   goalName: prefill ? (index === 1 ? 'Child Education' : `Goal ${index}`) : '',
@@ -38,10 +105,15 @@ const useCalculator = () => {
 
   const goalPlans = useMemo(
     () =>
-      goals.map((goal) => ({
-        goal,
-        plan: calculateGoalPlan(sanitizeGoalInputs(goal)),
-      })),
+      goals.map((goal) => {
+        const validation = validateGoalInputs(goal);
+
+        return {
+          goal,
+          ...validation,
+          plan: validation.isComplete ? calculateGoalPlan(sanitizeGoalInputs(goal)) : null,
+        };
+      }),
     [goals]
   );
 
@@ -55,12 +127,25 @@ const useCalculator = () => {
     [goalPlans, selectedGoal]
   );
 
+  const selectedGoalValidation = useMemo(
+    () => validateGoalInputs(selectedGoal),
+    [selectedGoal]
+  );
+
+  const selectedGoalInsights = useMemo(
+    () =>
+      selectedGoalValidation.isComplete && selectedGoalResult
+        ? buildGoalInsights({ goal: selectedGoal, plan: selectedGoalResult })
+        : null,
+    [selectedGoal, selectedGoalResult, selectedGoalValidation.isComplete]
+  );
+
   const portfolioSummary = useMemo(
     () =>
       goalPlans.reduce(
         (acc, current) => ({
-          monthlySIP: acc.monthlySIP + current.plan.requiredMonthlySIP,
-          futureValue: acc.futureValue + current.plan.inflatedGoalValue,
+          monthlySIP: acc.monthlySIP + (current.plan?.requiredMonthlySIP || 0),
+          futureValue: acc.futureValue + (current.plan?.inflatedGoalValue || 0),
         }),
         { monthlySIP: 0, futureValue: 0 }
       ),
@@ -74,7 +159,7 @@ const useCalculator = () => {
   }, [selectedGoal?.expectedReturn]);
 
   const scenarioData = useMemo(() => {
-    if (!selectedGoal) return [];
+    if (!selectedGoal || !selectedGoalResult) return [];
 
     return scenarioReturns.map((returnRate) => {
       const plan = calculateGoalPlan(
@@ -92,7 +177,7 @@ const useCalculator = () => {
         inflatedGoalValue: plan.inflatedGoalValue,
       };
     });
-  }, [scenarioReturns, selectedGoal]);
+  }, [scenarioReturns, selectedGoal, selectedGoalResult]);
 
   const addGoal = () => {
     const newGoal = createGoal({ prefill: false, index: goals.length + 1 });
@@ -112,6 +197,8 @@ const useCalculator = () => {
   };
 
   const updateGoal = (goalId, field, rawValue) => {
+    const isEmptyNumericInput =
+      rawValue === '' && (field === 'currentCost' || field === 'yearsToGoal');
     const value = field === 'goalName' ? rawValue : sanitizeNumber(rawValue);
 
     setGoals((prev) =>
@@ -120,7 +207,9 @@ const useCalculator = () => {
           ? {
               ...goal,
               [field]:
-                field === 'yearsToGoal'
+                isEmptyNumericInput
+                  ? ''
+                  : field === 'yearsToGoal'
                   ? clamp(value, 1, MAX_YEARS)
                   : field === 'inflationRate'
                     ? clamp(value, 0, MAX_INFLATION_RATE)
@@ -139,6 +228,8 @@ const useCalculator = () => {
     goals,
     goalPlans,
     selectedGoal,
+    selectedGoalValidation,
+    selectedGoalInsights,
     selectedGoalResult,
     portfolioSummary,
     scenarioData,

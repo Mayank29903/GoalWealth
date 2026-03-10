@@ -13,6 +13,9 @@ const InvestmentTable = ({ rows = [] }) => {
 
       <div className="mt-4 overflow-x-auto">
         <table className="min-w-full border-collapse text-sm">
+          <caption className="sr-only">
+            Yearly invested amount, expected value, and estimated gain breakdown table.
+          </caption>
           <thead>
             <tr className="border-b border-[#9190904d] text-left text-text_secondary">
               <th scope="col" className="px-3 py-2 font-medium">
@@ -32,7 +35,9 @@ const InvestmentTable = ({ rows = [] }) => {
           <tbody>
             {rows.map((row) => (
               <tr key={row.year} className="border-b border-[#91909033]">
-                <td className="px-3 py-2 font-medium text-text_primary">{row.year}</td>
+                <th scope="row" className="px-3 py-2 font-medium text-text_primary">
+                  {row.year}
+                </th>
                 <td className="px-3 py-2 text-text_secondary">
                   {formatCurrency(row.totalInvested)}
                 </td>

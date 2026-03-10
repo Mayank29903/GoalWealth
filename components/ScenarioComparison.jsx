@@ -41,9 +41,13 @@ const ScenarioComparison = ({ scenarios = [] }) => {
     inflatedGoalValue: toSafeChartValue(scenario?.inflatedGoalValue),
   }));
 
+  const scenarioSummary = safeScenarios.length
+    ? `Scenario chart compares monthly SIP across ${safeScenarios.length} return assumptions, from ${safeScenarios[0].returnRate}% to ${safeScenarios[safeScenarios.length - 1].returnRate}%.`
+    : 'No scenario data available.';
+
   return (
     <section
-      className="rounded-lg border border-[#9190904d] bg-white p-6 shadow-sm"
+      className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6"
       aria-label="Scenario comparison"
     >
       <h2 className="text-xl font-bold text-primary_blue">Scenario Comparison</h2>
@@ -51,26 +55,34 @@ const ScenarioComparison = ({ scenarios = [] }) => {
         Compare required SIP for different return assumptions.
       </p>
 
-      <div className="mt-6 h-72 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={safeScenarios} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#d4d4d8" />
-            <XAxis dataKey="returnRate" tickFormatter={(v) => `${v}%`} stroke="#919090" />
-            <YAxis tickFormatter={formatAxisValue} stroke="#919090" width={84} />
-            <Tooltip
-              formatter={(value) => formatCurrency(Number(value))}
-              labelFormatter={(label) => `Return ${label}%`}
-            />
-            <Bar
-              dataKey="requiredMonthlySIP"
-              name="Monthly SIP"
-              fill="#224c87"
-              radius={[8, 8, 0, 0]}
-              isAnimationActive={false}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <figure className="mt-6" aria-labelledby="scenario-chart-caption" aria-describedby="scenario-chart-summary">
+        <figcaption id="scenario-chart-caption" className="mb-2 text-sm font-medium text-text_secondary">
+          Required SIP at different annual return assumptions.
+        </figcaption>
+        <p id="scenario-chart-summary" className="sr-only">
+          {scenarioSummary}
+        </p>
+        <div className="h-72 w-full" role="img" aria-label="Scenario comparison bar chart">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={safeScenarios} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#d4d4d8" />
+              <XAxis dataKey="returnRate" tickFormatter={(v) => `${v}%`} stroke="#919090" />
+              <YAxis tickFormatter={formatAxisValue} stroke="#919090" width={84} />
+              <Tooltip
+                formatter={(value) => formatCurrency(Number(value))}
+                labelFormatter={(label) => `Return ${label}%`}
+              />
+              <Bar
+                dataKey="requiredMonthlySIP"
+                name="Monthly SIP"
+                fill="#224c87"
+                radius={[8, 8, 0, 0]}
+                isAnimationActive={false}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </figure>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {safeScenarios.map((scenario) => (

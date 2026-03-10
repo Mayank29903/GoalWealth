@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GoalWealth Planner
 
-## Getting Started
+GoalWealth Planner is a goal-based SIP planning tool that estimates required monthly investment for future financial goals using inflation-adjusted target values and return-based SIP calculations.
 
-First, run the development server:
+## Core Financial Logic
+
+### Step 1: Inflate Goal Value
+
+`FV = Present Cost x (1 + Inflation rate)^Years`
+
+Where:
+- `FV` = future goal value (inflated target)
+- Inflation rate is entered as annual percent in UI
+
+### Step 2: Calculate Required Monthly SIP
+
+Monthly rate:
+- `r = annual return / 1200` (because annual return is entered as %)
+
+Total months:
+- `n = years x 12`
+
+Required SIP:
+- `SIP = FV x r / [((1 + r)^n - 1) x (1 + r)]`
+
+Zero-return fallback:
+- If annual return is `0`, calculator uses `SIP = FV / n`
+
+## What The App Covers
+
+- Multi-goal planning with independent assumptions
+- Separate inflation and return assumptions (clearly labeled in UI)
+- Step-by-step methodology section with formula substitution
+- Scenario analysis for different return assumptions
+- Growth chart, timeline, yearly breakdown table, and PDF export
+- Input completeness checks before showing projections
+
+## Compliance & Disclosure
+
+- Educational use only; not investment advice
+- Fixed inflation/return assumptions are used in projections
+- Taxes, fund expenses, and exit loads are excluded from core model
+- Results are indicative and can differ from real market outcomes
+
+## Accessibility & UX Highlights
+
+- Skip link to main content for keyboard users
+- Semantic headings, labels, and aria descriptions on forms
+- Required-field guidance and missing-input checklist
+- Focus-visible styling and reduced-motion support
+- Responsive layout across mobile and desktop
+
+## Tech Stack
+
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- Recharts
+- jsPDF + html2canvas for export
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Quality Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+npm run build
+```

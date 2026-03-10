@@ -32,9 +32,16 @@ const CalculationMethodology = ({ goal, results }) => {
   const monthlyRate = expectedReturn / 1200;
   const totalMonths = yearsToGoal * 12;
 
+  const keyInputs = [
+    { label: 'Current Goal Cost', value: formatCurrency(presentCost) },
+    { label: 'Goal Timeline', value: `${yearsToGoal} years` },
+    { label: 'Inflation Assumption', value: `${formatRate(inflationRate)}%` },
+    { label: 'Return Assumption', value: `${formatRate(expectedReturn)}%` },
+  ];
+
   return (
     <section
-      className="rounded-lg border border-[#9190904d] bg-white p-6 shadow-sm"
+      className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6"
       aria-label="Calculation methodology"
     >
       <h2 className="text-xl font-bold text-primary_blue">How This SIP Is Calculated</h2>
@@ -43,6 +50,20 @@ const CalculationMethodology = ({ goal, results }) => {
         monthly SIP needed to reach that value.
       </p>
 
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {keyInputs.map((input) => (
+          <article
+            key={input.label}
+            className="rounded-lg border border-[#91909033] bg-card_background p-3"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-text_secondary">
+              {input.label}
+            </p>
+            <p className="mt-1 text-sm font-semibold text-primary_blue">{input.value}</p>
+          </article>
+        ))}
+      </div>
+
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
         <article className="rounded-md border border-[#224c8733] bg-[#224c870a] p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-primary_blue">
@@ -50,7 +71,7 @@ const CalculationMethodology = ({ goal, results }) => {
           </p>
           <p className="mt-2 text-sm text-text_secondary">
             <span className="font-medium text-text_primary">Formula:</span>{' '}
-            <code>FV = Present Cost x (1 + Inflation rate)^Years</code>
+            <code className="font-semibold">FV = Present Cost x (1 + Inflation rate)^Years</code>
           </p>
           <p className="mt-2 text-sm text-text_secondary break-all [overflow-wrap:anywhere]">
             <span className="font-medium text-text_primary">Applied:</span>{' '}
@@ -59,7 +80,7 @@ const CalculationMethodology = ({ goal, results }) => {
           </p>
         </article>
 
-        <article className="rounded-md border border-[#da383240] bg-[#da38320d] p-4">
+        <article className="rounded-md border border-[#b4231840] bg-[#b423180d] p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-accent_red">
             Step 2 - Required Monthly SIP
           </p>
@@ -74,7 +95,7 @@ const CalculationMethodology = ({ goal, results }) => {
           </p>
           <p className="mt-2 text-sm text-text_secondary">
             <span className="font-medium text-text_primary">Formula:</span>{' '}
-            <code>Required SIP = FV x r / [((1 + r)^n - 1) x (1 + r)]</code>
+            <code className="font-semibold">Required SIP = FV x r / [((1 + r)^n - 1) x (1 + r)]</code>
           </p>
           {monthlyRate > 0 ? (
             <p className="mt-2 text-sm text-text_secondary break-all [overflow-wrap:anywhere]">
@@ -100,7 +121,7 @@ const CalculationMethodology = ({ goal, results }) => {
             Used only in Step 1 to estimate how much your goal cost will grow over time.
           </p>
         </div>
-        <div className="rounded-md border border-[#da383240] bg-[#da383212] p-3">
+        <div className="rounded-md border border-[#b4231840] bg-[#b4231812] p-3">
           <p className="text-sm font-semibold text-accent_red">Return Assumption</p>
           <p className="mt-1 text-xs text-text_secondary">
             Used only in Step 2 to model investment growth and compute the required monthly SIP.
@@ -112,3 +133,4 @@ const CalculationMethodology = ({ goal, results }) => {
 };
 
 export default CalculationMethodology;
+

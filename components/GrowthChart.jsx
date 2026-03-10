@@ -66,57 +66,71 @@ const GrowthChart = ({ data }) => {
       }))
     : [];
 
+  const startPoint = safeData[0];
+  const endPoint = safeData[safeData.length - 1];
+  const chartSummary = endPoint
+    ? `From year ${startPoint?.year || 1} to year ${endPoint.year}, estimated corpus grows from ${formatCurrency(startPoint?.corpus || 0)} to ${formatCurrency(endPoint.corpus || 0)}.`
+    : 'No growth data available yet.';
+
   return (
-    <div className="h-96 w-full" role="img" aria-label="Investment growth line chart">
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          data={safeData}
-          margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-          <XAxis
-            dataKey="year"
-            label={{ value: 'Years', position: 'insideBottom', offset: -5 }}
-            stroke="#64748b"
-          />
-          <YAxis
-            tickFormatter={formatAxisValue}
-            stroke="#64748b"
-            width={84}
-          />
-          <Tooltip content={<GrowthTooltip />} />
-          <Legend />
-          <Area
-            type="linear"
-            dataKey="invested"
-            fill="#919090"
-            stroke="#919090"
-            fillOpacity={0.2}
-            name="Total Invested"
-            isAnimationActive={false}
-          />
-          <Area
-            type="linear"
-            dataKey="returns"
-            fill="#da3832"
-            stroke="#da3832"
-            fillOpacity={0.22}
-            name="Estimated Returns"
-            isAnimationActive={false}
-          />
-          <Line
-            type="linear"
-            dataKey="corpus"
-            stroke="#224c87"
-            strokeWidth={3}
-            dot={false}
-            name="Total Corpus"
-            activeDot={{ r: 6 }}
-            isAnimationActive={false}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
-    </div>
+    <figure className="w-full" aria-labelledby="growth-chart-caption" aria-describedby="growth-chart-summary">
+      <figcaption id="growth-chart-caption" className="mb-2 text-sm font-medium text-text_secondary">
+        Invested amount, estimated returns, and projected corpus over time.
+      </figcaption>
+      <p id="growth-chart-summary" className="sr-only">
+        {chartSummary}
+      </p>
+      <div className="h-96 w-full" role="img" aria-label="Investment growth line chart">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={safeData}
+            margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+            <XAxis
+              dataKey="year"
+              label={{ value: 'Years', position: 'insideBottom', offset: -5 }}
+              stroke="#64748b"
+            />
+            <YAxis
+              tickFormatter={formatAxisValue}
+              stroke="#64748b"
+              width={84}
+            />
+            <Tooltip content={<GrowthTooltip />} />
+            <Legend />
+            <Area
+              type="linear"
+              dataKey="invested"
+              fill="#919090"
+              stroke="#919090"
+              fillOpacity={0.2}
+              name="Total Invested"
+              isAnimationActive={false}
+            />
+            <Area
+              type="linear"
+              dataKey="returns"
+              fill="#b42318"
+              stroke="#b42318"
+              fillOpacity={0.22}
+              name="Estimated Returns"
+              isAnimationActive={false}
+            />
+            <Line
+              type="linear"
+              dataKey="corpus"
+              stroke="#224c87"
+              strokeWidth={3}
+              dot={false}
+              name="Total Corpus"
+              activeDot={{ r: 6 }}
+              isAnimationActive={false}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+    </figure>
   );
 };
 

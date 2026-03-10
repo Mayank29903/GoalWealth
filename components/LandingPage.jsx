@@ -33,12 +33,18 @@ const launchChecklist = [
   'Generate a shareable and downloadable plan',
 ];
 
+const impactStats = [
+  { label: 'Planning Steps', value: '3' },
+  { label: 'Projection Views', value: '4' },
+  { label: 'Export Ready', value: 'PDF' },
+];
+
 const LandingPage = ({ onStart }) => {
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-3xl border border-[#224c8740] bg-gradient-to-br from-white via-[#eef4fa] to-[#fcefed] p-8 shadow-xl lg:p-12">
         <div className="pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-[#224c8733] blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 right-0 h-80 w-80 rounded-full bg-[#da383226] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 right-0 h-80 w-80 rounded-full bg-[#b4231826] blur-3xl" />
 
         <div className="relative z-10 grid gap-10 lg:grid-cols-[1.3fr_0.9fr] lg:items-center">
           <div>
@@ -48,7 +54,7 @@ const LandingPage = ({ onStart }) => {
             </span>
 
             <h2 className="mt-5 text-4xl font-black leading-tight text-text_primary md:text-5xl">
-              Plan Your Wealth Like A Product Roadmap
+              Build A Winning Goal Plan In Minutes
             </h2>
             <p className="mt-4 max-w-2xl text-lg leading-relaxed text-text_secondary">
               Start with your life goals, tune assumptions, and get a data-backed SIP strategy you
@@ -70,6 +76,20 @@ const LandingPage = ({ onStart }) => {
               >
                 See How It Works
               </a>
+            </div>
+
+            <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
+              {impactStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-[#224c8733] bg-[#ffffffcf] px-3 py-2"
+                >
+                  <p className="text-lg font-bold text-primary_blue">{stat.value}</p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-text_secondary">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -93,7 +113,7 @@ const LandingPage = ({ onStart }) => {
               ))}
             </ol>
 
-            <div className="mt-6 flex items-center gap-2 rounded-xl border border-[#da383240] bg-[#da383214] p-3 text-sm font-medium text-text_primary">
+            <div className="mt-6 flex items-center gap-2 rounded-xl border border-[#b4231840] bg-[#b4231814] p-3 text-sm font-medium text-text_primary">
               <CalendarClock size={16} className="text-accent_red" aria-hidden="true" />
               Typical setup time: under 3 minutes
             </div>
@@ -126,3 +146,4 @@ const LandingPage = ({ onStart }) => {
 };
 
 export default LandingPage;
+

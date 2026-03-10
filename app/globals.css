@@ -2,7 +2,7 @@
 
 @theme {
   --color-primary_blue: #224c87;
-  --color-accent_red: #da3832;
+  --color-accent_red: #b42318;
   --color-neutral_grey: #919090;
   --color-text_primary: #1e293b;
   --color-text_secondary: #475569;
@@ -26,6 +26,10 @@ body {
   min-height: 100vh;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -34,11 +38,53 @@ body {
 *::-webkit-scrollbar {
   width: 0;
   height: 0;
+  background: transparent;
 }
 
 *:focus-visible {
   outline: 3px solid #224c87;
   outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 16px;
+  z-index: 1000;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e293b;
+  padding: 8px 12px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ::selection {
