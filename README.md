@@ -2,6 +2,10 @@
 
 GoalWealth Planner is a goal-based SIP planning tool that estimates required monthly investment for future financial goals using inflation-adjusted target values and return-based SIP calculations.
 
+## Live Deployment
+
+- https://goalwealth-planner.vercel.app/
+
 ## Core Financial Logic
 
 ### Step 1: Inflate Goal Value
