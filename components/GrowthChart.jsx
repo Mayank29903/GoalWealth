@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   Area,
   CartesianGrid,
@@ -57,14 +58,28 @@ const GrowthTooltip = ({ active, payload, label }) => {
 };
 
 const GrowthChart = ({ data }) => {
-  const safeData = Array.isArray(data)
-    ? data.map((point) => ({
-        ...point,
-        invested: toSafeChartValue(point?.invested),
-        returns: toSafeChartValue(point?.returns),
-        corpus: toSafeChartValue(point?.corpus),
-      }))
-    : [];
+  const shouldReduceMotion = useReducedMotion();
+
+  const safeData = useMemo(
+    () =>
+      Array.isArray(data)
+        ? data.map((point) => ({
+            ...point,
+            invested: toSafeChartValue(point?.invested),
+            returns: toSafeChartValue(point?.returns),
+            corpus: toSafeChartValue(point?.corpus),
+          }))
+        : [],
+    [data]
+  );
+
+  const chartAnimationKey = useMemo(() => {
+    if (!safeData.length) return 'growth-empty';
+
+    const firstPoint = safeData[0];
+    const lastPoint = safeData[safeData.length - 1];
+    return `growth-${safeData.length}-${firstPoint?.corpus || 0}-${lastPoint?.corpus || 0}`;
+  }, [safeData]);
 
   const startPoint = safeData[0];
   const endPoint = safeData[safeData.length - 1];
@@ -80,7 +95,15 @@ const GrowthChart = ({ data }) => {
       <p id="growth-chart-summary" className="sr-only">
         {chartSummary}
       </p>
-      <div className="h-96 w-full" role="img" aria-label="Investment growth line chart">
+      <motion.div
+        key={chartAnimationKey}
+        className="h-96 w-full"
+        role="img"
+        aria-label="Investment growth line chart"
+        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: 'easeOut' }}
+      >
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={safeData}
@@ -106,7 +129,8 @@ const GrowthChart = ({ data }) => {
               stroke="#919090"
               fillOpacity={0.2}
               name="Total Invested"
-              isAnimationActive={false}
+              isAnimationActive={!shouldReduceMotion}
+              animationDuration={700}
             />
             <Area
               type="linear"
@@ -115,7 +139,8 @@ const GrowthChart = ({ data }) => {
               stroke="#b42318"
               fillOpacity={0.22}
               name="Estimated Returns"
-              isAnimationActive={false}
+              isAnimationActive={!shouldReduceMotion}
+              animationDuration={780}
             />
             <Line
               type="linear"
@@ -125,11 +150,12 @@ const GrowthChart = ({ data }) => {
               dot={false}
               name="Total Corpus"
               activeDot={{ r: 6 }}
-              isAnimationActive={false}
+              isAnimationActive={!shouldReduceMotion}
+              animationDuration={860}
             />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
     </figure>
   );
 };

@@ -166,7 +166,7 @@ const LandingPage = ({ onStart }) => {
 
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-3xl border border-[#224c8740] bg-gradient-to-br from-white via-[#eef4fa] to-[#fcefed] p-8 shadow-xl lg:p-12">
+      <section className="relative overflow-hidden rounded-3xl border border-[#224c8740] bg-linear-to-br from-white via-[#eef4fa] to-[#fcefed] p-8 shadow-xl lg:p-12">
         <div className="pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-[#224c8733] blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 right-0 h-80 w-80 rounded-full bg-[#b4231826] blur-3xl" />
 

@@ -17,11 +17,12 @@ import GoalTimeline from '@/components/GoalTimeline';
 import AssumptionControls from '@/components/AssumptionControls';
 import Disclaimer from '@/components/Disclaimer';
 import GoalCard from '@/components/GoalCard';
+import KPICards from '@/components/KPICards';
 import InvestmentTable from '@/components/InvestmentTable';
 import CalculationMethodology from '@/components/CalculationMethodology';
 import GoalInsightsPanel from '@/components/GoalInsightsPanel';
+import FinancialHealthScore from '@/components/FinancialHealthScore';
 import useCalculator from '@/hooks/useCalculator';
-import { formatCurrency } from '@/utils/financialHelpers';
 import { exportElementToPdf } from '@/utils/pdfExport';
 
 const GrowthChart = dynamic(() => import('@/components/GrowthChart'), { ssr: false });
@@ -88,6 +89,12 @@ const PlannerWorkspace = ({ onBack }) => {
     setExportError('');
 
     try {
+      await new Promise((resolve) => {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(resolve);
+        });
+      });
+
       const safeGoalName = (selectedGoal.goalName || 'goal-plan')
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -113,24 +120,28 @@ const PlannerWorkspace = ({ onBack }) => {
     {
       title: 'Total Goals',
       value: goals.length,
+      valueType: 'number',
       valueClass: 'text-primary_blue',
       icon: Flag,
     },
     {
       title: 'Combined Monthly SIP',
-      value: formatCurrency(portfolioSummary.monthlySIP),
+      value: portfolioSummary.monthlySIP,
+      valueType: 'currency',
       valueClass: 'text-primary_blue',
       icon: HandCoins,
     },
     {
       title: 'Combined Goal Value',
-      value: formatCurrency(portfolioSummary.futureValue),
+      value: portfolioSummary.futureValue,
+      valueType: 'currency',
       valueClass: 'text-primary_blue',
       icon: Landmark,
     },
     {
       title: 'Active Goal',
       value: selectedGoal?.goalName?.trim() || 'Untitled Goal',
+      valueType: 'text',
       valueClass: 'text-text_primary',
       icon: CircleAlert,
     },
@@ -163,30 +174,7 @@ const PlannerWorkspace = ({ onBack }) => {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Portfolio summary">
-        {statCards.map((card) => {
-          const Icon = card.icon;
-
-          return (
-            <article
-              key={card.title}
-              className="min-w-0 rounded-xl border border-[#9190904d] bg-white p-4 shadow-sm"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-medium text-text_secondary">{card.title}</p>
-                <span className="inline-flex rounded-md bg-[#224c8714] p-2 text-primary_blue">
-                  <Icon size={15} aria-hidden="true" />
-                </span>
-              </div>
-              <p
-                className={`mt-2 text-2xl font-bold leading-tight break-all [overflow-wrap:anywhere] ${card.valueClass}`}
-              >
-                {card.value}
-              </p>
-            </article>
-          );
-        })}
-      </section>
+      <KPICards cards={statCards} />
 
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <aside className="space-y-6 lg:col-span-4" aria-label="Goal setup panel">
@@ -223,6 +211,32 @@ const PlannerWorkspace = ({ onBack }) => {
 
           <GoalInputForm goal={selectedGoal} onFieldChange={onGoalFieldChange} />
           <AssumptionControls goal={selectedGoal} onFieldChange={onGoalFieldChange} />
+
+          <section aria-label="Financial health panel">
+            {selectedGoalValidation.isComplete && selectedGoalResult ? (
+              <FinancialHealthScore
+                requiredMonthlySIP={selectedGoalResult.requiredMonthlySIP}
+                estimatedMonthlyIncome={selectedGoal.monthlyIncome}
+                yearsToGoal={selectedGoal.yearsToGoal}
+                inflationRate={selectedGoal.inflationRate}
+                expectedReturn={selectedGoal.expectedReturn}
+                totalInvestedAmount={selectedGoalResult.totalInvestedAmount}
+                inflatedGoalValue={selectedGoalResult.inflatedGoalValue}
+                healthAssumptions={{
+                  sipThresholdPct: selectedGoal.healthSipThresholdPct,
+                  shortHorizonYears: selectedGoal.healthShortHorizonYears,
+                  safetyGapPct: selectedGoal.healthSafetyGapPct,
+                }}
+              />
+            ) : (
+              <div className="rounded-xl border border-[#9190904d] bg-white p-4 shadow-sm">
+                <h4 className="text-sm font-semibold text-primary_blue">Financial Health Score</h4>
+                <p className="mt-1 text-xs text-text_secondary">
+                  Complete required goal details to see the score and health signals here.
+                </p>
+              </div>
+            )}
+          </section>
         </aside>
 
         <section className="space-y-6 lg:col-span-8" aria-label="Goal analysis and report">
@@ -289,6 +303,7 @@ const PlannerWorkspace = ({ onBack }) => {
                 <ResultsCard
                   results={selectedGoalResult}
                   goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
+                  insights={selectedGoalInsights}
                 />
 
                 <GoalInsightsPanel insights={selectedGoalInsights} />

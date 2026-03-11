@@ -16,6 +16,7 @@ const createOffscreenClone = (sourceElement, backgroundColor) => {
   wrapper.style.margin = '0';
   wrapper.style.width = `${Math.max(sourceWidth, 320)}px`;
   wrapper.style.backgroundColor = backgroundColor;
+  wrapper.setAttribute('data-pdf-clone', 'true');
 
   const clone = sourceElement.cloneNode(true);
   clone.querySelectorAll('[data-export-ignore="true"]').forEach((node) => node.remove());

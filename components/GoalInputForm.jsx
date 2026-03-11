@@ -9,6 +9,7 @@ const GoalInputForm = ({ goal, onFieldChange }) => {
   const isGoalNameMissing = !goal.goalName?.trim();
   const isCurrentCostMissing = sanitizeNumber(goal.currentCost) <= 0;
   const isTimelineMissing = sanitizeNumber(goal.yearsToGoal) < 1;
+  const isMonthlyIncomeMissing = sanitizeNumber(goal.monthlyIncome) <= 0;
 
   return (
     <section
@@ -108,6 +109,31 @@ const GoalInputForm = ({ goal, onFieldChange }) => {
             {isTimelineMissing ? (
               <p id="years-error" className="mt-1 text-xs font-medium text-[#7a271a]" role="alert">
                 Years to goal must be at least 1.
+              </p>
+            ) : null}
+          </div>
+          <div>
+            <label htmlFor="monthlyIncome" className="block text-sm font-medium text-text_secondary mb-1">
+              Estimated Monthly Income
+            </label>
+            <input
+              id="monthlyIncome"
+              type="number"
+              min="0"
+              max="1000000000"
+              value={goal.monthlyIncome}
+              onChange={(e) => onFieldChange('monthlyIncome', e.target.value)}
+              className="w-full rounded border border-[#91909080] p-2 text-text_primary transition-colors focus:border-primary_blue focus:ring-2 focus:ring-primary_blue"
+              inputMode="numeric"
+              aria-label="Estimated monthly income"
+              aria-describedby={isMonthlyIncomeMissing ? 'monthlyIncome-help monthlyIncome-info' : 'monthlyIncome-help'}
+            />
+            <p id="monthlyIncome-help" className="mt-1 text-xs text-neutral_grey">
+              Used for Financial Health Score affordability check (SIP vs income).
+            </p>
+            {isMonthlyIncomeMissing ? (
+              <p id="monthlyIncome-info" className="mt-1 text-xs text-text_secondary">
+                Recommended: add income to unlock full Financial Health Score accuracy.
               </p>
             ) : null}
           </div>

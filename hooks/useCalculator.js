@@ -6,9 +6,16 @@ import { sanitizeNumber } from '@/utils/financialHelpers';
 
 const DEFAULT_SCENARIOS = [10, 12, 15];
 const MAX_GOAL_COST = 1e13;
+const MAX_MONTHLY_INCOME = 1e9;
 const MAX_YEARS = 50;
 const MAX_RATE = 30;
 const MAX_INFLATION_RATE = 20;
+const MAX_HEALTH_SIP_THRESHOLD = 80;
+const MIN_HEALTH_SIP_THRESHOLD = 20;
+const MAX_HEALTH_SHORT_HORIZON = 15;
+const MIN_HEALTH_SHORT_HORIZON = 2;
+const MAX_HEALTH_SAFETY_GAP = 8;
+const MIN_HEALTH_SAFETY_GAP = 0;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const clampToSafeNumber = (value, min, max) => {
@@ -87,9 +94,13 @@ const createGoal = ({ prefill = false, index = 1 } = {}) => ({
   id: `goal-${Date.now()}-${Math.random().toString(16).slice(2)}`,
   goalName: prefill ? (index === 1 ? 'Child Education' : `Goal ${index}`) : '',
   currentCost: prefill ? 1000000 : '',
+  monthlyIncome: prefill ? 150000 : '',
   yearsToGoal: prefill ? 10 : '',
   inflationRate: 6,
   expectedReturn: 12,
+  healthSipThresholdPct: 40,
+  healthShortHorizonYears: 5,
+  healthSafetyGapPct: 2,
 });
 
 const sanitizeGoalInputs = (goal) => ({
@@ -198,7 +209,8 @@ const useCalculator = () => {
 
   const updateGoal = (goalId, field, rawValue) => {
     const isEmptyNumericInput =
-      rawValue === '' && (field === 'currentCost' || field === 'yearsToGoal');
+      rawValue === '' &&
+      (field === 'currentCost' || field === 'yearsToGoal' || field === 'monthlyIncome');
     const value = field === 'goalName' ? rawValue : sanitizeNumber(rawValue);
 
     setGoals((prev) =>
@@ -215,8 +227,16 @@ const useCalculator = () => {
                     ? clamp(value, 0, MAX_INFLATION_RATE)
                     : field === 'expectedReturn'
                       ? clamp(value, 0, MAX_RATE)
-                      : field === 'currentCost'
+                    : field === 'currentCost'
                         ? clamp(value, 0, MAX_GOAL_COST)
+                        : field === 'monthlyIncome'
+                          ? clamp(value, 0, MAX_MONTHLY_INCOME)
+                        : field === 'healthSipThresholdPct'
+                          ? clamp(value, MIN_HEALTH_SIP_THRESHOLD, MAX_HEALTH_SIP_THRESHOLD)
+                        : field === 'healthShortHorizonYears'
+                          ? clamp(value, MIN_HEALTH_SHORT_HORIZON, MAX_HEALTH_SHORT_HORIZON)
+                        : field === 'healthSafetyGapPct'
+                          ? clamp(value, MIN_HEALTH_SAFETY_GAP, MAX_HEALTH_SAFETY_GAP)
                         : value,
             }
           : goal
