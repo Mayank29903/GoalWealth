@@ -20,7 +20,7 @@ body {
   color: rgb(var(--foreground-rgb));
   background:
     radial-gradient(circle at 10% 0%, rgba(34, 76, 135, 0.08), transparent 38%),
-    radial-gradient(circle at 90% 0%, rgba(218, 56, 50, 0.06), transparent 34%),
+    radial-gradient(circle at 90% 0%, rgba(218, 56, 50, 0.08), transparent 34%),
     rgb(var(--background-rgb));
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -78,7 +78,7 @@ html {
 .ui-card {
   border: 1px solid rgba(145, 144, 144, 0.28);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(249, 250, 251, 0.98) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(251, 247, 247, 0.98) 100%);
   box-shadow:
     0 4px 10px rgba(15, 23, 42, 0.06),
     0 1px 3px rgba(15, 23, 42, 0.06);
@@ -107,7 +107,7 @@ html {
 
 .ui-subcard {
   border: 1px solid rgba(145, 144, 144, 0.24);
-  background: rgba(248, 250, 252, 0.92);
+  background: rgba(252, 249, 249, 0.92);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
