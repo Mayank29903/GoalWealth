@@ -14,7 +14,7 @@ const GoalInputForm = ({ goal, onFieldChange }) => {
   return (
     <section
       id="goal-details-section"
-      className="rounded-xl border border-[#9190904d] bg-card_background p-5 shadow-sm sm:p-6"
+      className="ui-card rounded-xl p-5 sm:p-6"
       role="region"
       aria-labelledby="goal-details-heading"
     >

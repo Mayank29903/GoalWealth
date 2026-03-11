@@ -47,7 +47,7 @@ const ScenarioComparison = ({ scenarios = [] }) => {
 
   return (
     <section
-      className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6"
+      className="ui-card rounded-xl p-5 sm:p-6"
       aria-label="Scenario comparison"
     >
       <h2 className="text-xl font-bold text-primary_blue">Scenario Comparison</h2>
@@ -88,7 +88,7 @@ const ScenarioComparison = ({ scenarios = [] }) => {
         {safeScenarios.map((scenario) => (
           <article
             key={scenario.returnRate}
-            className="rounded-md border border-[#9190904d] bg-card_background p-4"
+            className="ui-subcard rounded-md p-4"
           >
             <h3 className="font-semibold text-primary_blue">
               Return {formatPercentage(scenario.returnRate)}

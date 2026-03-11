@@ -38,7 +38,7 @@ const KPICards = ({ cards = [] }) => {
         return (
           <article
             key={card.title}
-            className="min-w-0 rounded-xl border border-[#9190904d] bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            className="ui-card min-w-0 rounded-xl p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <p className="text-sm font-medium text-text_secondary">{card.title}</p>

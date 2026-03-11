@@ -44,7 +44,7 @@ const GoalInsightsPanel = ({ insights }) => {
 
   return (
     <section
-      className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6"
+      className="ui-card rounded-xl p-5 sm:p-6"
       aria-labelledby="goal-insights-heading"
     >
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
@@ -60,7 +60,7 @@ const GoalInsightsPanel = ({ insights }) => {
         {metrics.map((metric) => (
           <article
             key={metric.label}
-            className="rounded-lg border border-[#91909033] bg-card_background p-4"
+            className="ui-subcard rounded-lg p-4"
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-text_secondary">
               {metric.label}

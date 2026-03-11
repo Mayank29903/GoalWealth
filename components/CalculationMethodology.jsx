@@ -41,7 +41,7 @@ const CalculationMethodology = ({ goal, results }) => {
 
   return (
     <section
-      className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6"
+      className="ui-card rounded-xl p-5 sm:p-6"
       aria-label="Calculation methodology"
     >
       <h2 className="text-xl font-bold text-primary_blue">How This SIP Is Calculated</h2>
@@ -54,7 +54,7 @@ const CalculationMethodology = ({ goal, results }) => {
         {keyInputs.map((input) => (
           <article
             key={input.label}
-            className="rounded-lg border border-[#91909033] bg-card_background p-3"
+            className="ui-subcard rounded-lg p-3"
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-text_secondary">
               {input.label}

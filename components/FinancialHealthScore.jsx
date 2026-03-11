@@ -182,7 +182,7 @@ const FinancialHealthScore = ({
 
   return (
     <motion.section
-      className="flex min-h-[600px] flex-col rounded-xl border border-[#9190904d] bg-white p-4 shadow-sm"
+      className="ui-card ui-card-static flex min-h-[600px] flex-col rounded-xl p-4"
       aria-labelledby="financial-health-score-heading"
       initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -219,13 +219,13 @@ const FinancialHealthScore = ({
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-        <div className="rounded-md border border-[#91909033] bg-card_background px-2 py-1.5">
+        <div className="ui-subcard rounded-md px-2 py-1.5">
           <p className="text-text_secondary">SIP</p>
           <p className="font-semibold text-primary_blue">
             {formatCurrency(toSafeNumber(requiredMonthlySIP))}
           </p>
         </div>
-        <div className="rounded-md border border-[#91909033] bg-card_background px-2 py-1.5">
+        <div className="ui-subcard rounded-md px-2 py-1.5">
           <p className="text-text_secondary">SIP Load</p>
           <p className="font-semibold text-primary_blue">
             {scoreData.sipLoadPct === null ? 'Add income' : formatPercent(scoreData.sipLoadPct)}

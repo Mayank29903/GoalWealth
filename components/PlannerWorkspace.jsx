@@ -22,6 +22,8 @@ import InvestmentTable from '@/components/InvestmentTable';
 import CalculationMethodology from '@/components/CalculationMethodology';
 import GoalInsightsPanel from '@/components/GoalInsightsPanel';
 import FinancialHealthScore from '@/components/FinancialHealthScore';
+import InflationImpactChart from '@/components/InflationImpactChart';
+import HorizonSimulator from '@/components/HorizonSimulator';
 import useCalculator from '@/hooks/useCalculator';
 import { exportElementToPdf } from '@/utils/pdfExport';
 
@@ -149,7 +151,7 @@ const PlannerWorkspace = ({ onBack }) => {
 
   return (
     <div className="space-y-8">
-      <header className="relative overflow-hidden rounded-2xl border border-[#224c8733] bg-white p-5 shadow-sm sm:p-6">
+      <header className="ui-card ui-card-static relative overflow-hidden rounded-2xl p-5 sm:p-6">
         <div className="pointer-events-none absolute -right-20 -top-16 h-52 w-52 rounded-full bg-[#224c8717] blur-3xl" />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -178,7 +180,7 @@ const PlannerWorkspace = ({ onBack }) => {
 
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
         <aside className="space-y-6 lg:col-span-4" aria-label="Goal setup panel">
-          <section className="rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:p-6">
+          <section className="ui-card rounded-xl p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-primary_blue">Financial Goals</h3>
               <button
@@ -229,7 +231,7 @@ const PlannerWorkspace = ({ onBack }) => {
                 }}
               />
             ) : (
-              <div className="rounded-xl border border-[#9190904d] bg-white p-4 shadow-sm">
+              <div className="ui-card rounded-xl p-4">
                 <h4 className="text-sm font-semibold text-primary_blue">Financial Health Score</h4>
                 <p className="mt-1 text-xs text-text_secondary">
                   Complete required goal details to see the score and health signals here.
@@ -237,10 +239,48 @@ const PlannerWorkspace = ({ onBack }) => {
               </div>
             )}
           </section>
+
+          <section aria-label="Inflation impact panel">
+            {selectedGoalValidation.isComplete && selectedGoalResult ? (
+              <InflationImpactChart
+                presentCost={selectedGoal.currentCost}
+                inflatedCost={selectedGoalResult.inflatedGoalValue}
+                inflationRate={selectedGoal.inflationRate}
+                yearsToGoal={selectedGoal.yearsToGoal}
+              />
+            ) : (
+              <div className="ui-card rounded-xl p-4">
+                <h4 className="text-sm font-semibold text-primary_blue">Inflation Impact Visualization</h4>
+                <p className="mt-1 text-xs text-text_secondary">
+                  Complete required goal details to compare present vs inflation-adjusted goal cost.
+                </p>
+              </div>
+            )}
+          </section>
+
+          <section aria-label="Investment horizon simulator panel">
+            {selectedGoalValidation.isComplete && selectedGoalResult ? (
+              <HorizonSimulator
+                key={`horizon-simulator-${selectedGoal?.id || 'default'}`}
+                currentCost={selectedGoal.currentCost}
+                inflationRate={selectedGoal.inflationRate}
+                expectedReturn={selectedGoal.expectedReturn}
+                baselineYears={selectedGoal.yearsToGoal}
+                baselineSIP={selectedGoalResult.requiredMonthlySIP}
+              />
+            ) : (
+              <div className="ui-card rounded-xl p-4">
+                <h4 className="text-sm font-semibold text-primary_blue">Investment Horizon Simulator</h4>
+                <p className="mt-1 text-xs text-text_secondary">
+                  Complete required goal details to simulate 1 to 30 year SIP outcomes.
+                </p>
+              </div>
+            )}
+          </section>
         </aside>
 
         <section className="space-y-6 lg:col-span-8" aria-label="Goal analysis and report">
-          <div className="flex flex-col gap-4 rounded-xl border border-[#9190904d] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="ui-card flex flex-col gap-4 rounded-xl p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="min-w-0">
               <h3 className="text-xl font-bold text-primary_blue break-words">
                 {(selectedGoal?.goalName?.trim() || 'Untitled Goal')} Plan
@@ -274,7 +314,7 @@ const PlannerWorkspace = ({ onBack }) => {
           ) : null}
 
           <div ref={reportRef} className="space-y-6" aria-live="polite">
-            <section className="rounded-xl border border-[#9190904d] bg-gradient-to-r from-white to-[#f8fbff] p-5 shadow-sm sm:p-6">
+            <section className="ui-card ui-card-static rounded-xl bg-gradient-to-r from-white to-[#f8fbff] p-5 sm:p-6">
               <h4 className="text-base font-bold text-primary_blue">Report Snapshot</h4>
               <p className="mt-1 text-sm text-text_secondary">
                 Generated on {reportDate}. Assumptions and projections are displayed below.
@@ -310,7 +350,7 @@ const PlannerWorkspace = ({ onBack }) => {
 
                 <CalculationMethodology goal={selectedGoal} results={selectedGoalResult} />
 
-                <div className="rounded-xl border border-[#9190904d] bg-card_background p-5 shadow-sm sm:p-6">
+                <div className="ui-card rounded-xl p-5 sm:p-6">
                   <h4 className="mb-4 text-xl font-bold text-primary_blue">Investment Growth Projection</h4>
                   <GrowthChart data={selectedGoalResult.growthData} />
                 </div>
@@ -319,7 +359,7 @@ const PlannerWorkspace = ({ onBack }) => {
 
                 <ScenarioComparison scenarios={scenarioData} />
 
-                <div className="rounded-xl border border-[#9190904d] bg-card_background p-5 shadow-sm sm:p-6">
+                <div className="ui-card rounded-xl p-5 sm:p-6">
                   <h4 className="mb-4 text-xl font-bold text-primary_blue">Goal Timeline Visualization</h4>
                   <GoalTimeline
                     years={selectedGoal.yearsToGoal}

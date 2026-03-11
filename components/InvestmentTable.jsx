@@ -3,7 +3,7 @@ import { formatCurrency } from '@/utils/financialHelpers';
 const InvestmentTable = ({ rows = [] }) => {
   return (
     <section
-      className="rounded-lg border border-[#9190904d] bg-white p-4"
+      className="ui-card rounded-lg p-4"
       aria-label="Year by year investment breakdown table"
     >
       <h3 className="text-lg font-semibold text-primary_blue">Year-by-Year Breakdown</h3>

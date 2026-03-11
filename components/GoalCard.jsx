@@ -19,10 +19,10 @@ const GoalCard = ({
   return (
     <article
       className={clsx(
-        'rounded-xl border p-4 transition-colors',
+        'rounded-xl border p-4 transition-all duration-200',
         isActive
-          ? 'border-primary_blue bg-[#224c870d] shadow-sm'
-          : 'border-[#9190904d] bg-white hover:border-[#224c8780]'
+          ? 'border-primary_blue bg-[#224c870d] shadow-md'
+          : 'border-[#9190904d] bg-white hover:-translate-y-0.5 hover:border-[#224c8780] hover:shadow-md'
       )}
       aria-label={`${displayGoalName} goal card`}
       role="group"
@@ -69,13 +69,13 @@ const GoalCard = ({
       </p>
 
       <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
-        <div className="min-w-0 rounded-md bg-card_background p-2">
+        <div className="ui-subcard min-w-0 rounded-md p-2">
           <dt className="text-text_secondary">Monthly SIP</dt>
           <dd className="font-semibold leading-tight text-primary_blue break-all [overflow-wrap:anywhere]">
             {isConfigured ? formatCurrency(result?.requiredMonthlySIP || 0) : '--'}
           </dd>
         </div>
-        <div className="min-w-0 rounded-md bg-card_background p-2">
+        <div className="ui-subcard min-w-0 rounded-md p-2">
           <dt className="text-text_secondary">Goal Value</dt>
           <dd className="font-semibold leading-tight text-text_primary break-all [overflow-wrap:anywhere]">
             {isConfigured ? formatCurrency(result?.inflatedGoalValue || 0) : '--'}

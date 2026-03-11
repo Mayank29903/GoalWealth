@@ -206,7 +206,7 @@ const LandingPage = ({ onStart }) => {
               {impactStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-[#224c8733] bg-[#ffffffcf] px-3 py-2"
+                  className="ui-subcard rounded-xl px-3 py-2"
                 >
                   <p className="text-lg font-bold text-primary_blue">{stat.value}</p>
                   <p className="text-xs font-medium uppercase tracking-wide text-text_secondary">
@@ -217,7 +217,7 @@ const LandingPage = ({ onStart }) => {
             </div>
           </div>
 
-          <article className="rounded-2xl border border-[#224c8733] bg-[#ffffffe6] p-6 shadow-lg backdrop-blur-sm">
+          <article className="ui-card rounded-2xl bg-[#ffffffe6] p-6 backdrop-blur-sm">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-text_secondary">
               Launch Flow
             </p>
@@ -227,7 +227,7 @@ const LandingPage = ({ onStart }) => {
               {launchChecklist.map((item, index) => (
                 <li
                   key={item}
-                  className="flex items-start gap-3 rounded-xl border border-[#91909033] bg-[#ffffffb3] p-3"
+                  className="ui-subcard flex items-start gap-3 rounded-xl p-3"
                 >
                   <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary_blue text-xs font-bold text-white">
                     {index + 1}
@@ -258,7 +258,7 @@ const LandingPage = ({ onStart }) => {
                 setActiveHighlightId((prev) => (prev === highlight.id ? null : highlight.id))
               }
               aria-pressed={isActive}
-              className={`rounded-2xl border bg-white p-6 text-left shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary_blue ${
+              className={`ui-card rounded-2xl p-6 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary_blue ${
                 isActive ? 'border-primary_blue ring-1 ring-[#224c8759]' : 'border-[#9190904d]'
               }`}
             >
@@ -279,7 +279,7 @@ const LandingPage = ({ onStart }) => {
 
       {activeHighlight ? (
         <section
-          className="rounded-2xl border border-[#224c8733] bg-white p-6 shadow-md sm:p-7"
+          className="ui-card rounded-2xl p-6 sm:p-7"
           aria-live="polite"
         >
           <h3 className="text-xl font-bold text-primary_blue">
@@ -291,7 +291,7 @@ const LandingPage = ({ onStart }) => {
             {activeExamples.map((example) => (
               <article
                 key={example.label}
-                className="rounded-xl border border-[#91909040] bg-card_background p-4"
+                className="ui-subcard rounded-xl p-4"
               >
                 <p className="text-xs font-semibold uppercase tracking-wide text-text_secondary">
                   {example.label}
