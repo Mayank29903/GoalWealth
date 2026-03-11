@@ -7,20 +7,20 @@
   --color-text_primary: #1e293b;
   --color-text_secondary: #475569;
   --color-card_background: #f8fafc;
-  --color-background_light: #eef4fa;
+  --color-background_light: #f9fafb;
   --font-sans: "Montserrat", "Segoe UI", "Trebuchet MS", Arial, sans-serif;
 }
 
 :root {
   --foreground-rgb: 30 41 59;
-  --background-rgb: 244 248 252;
+  --background-rgb: 249 250 251;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background:
-    radial-gradient(circle at 10% 0%, rgba(34, 76, 135, 0.12), transparent 35%),
-    radial-gradient(circle at 90% 0%, rgba(218, 56, 50, 0.1), transparent 30%),
+    radial-gradient(circle at 10% 0%, rgba(34, 76, 135, 0.08), transparent 38%),
+    radial-gradient(circle at 90% 0%, rgba(218, 56, 50, 0.06), transparent 34%),
     rgb(var(--background-rgb));
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -78,27 +78,31 @@ html {
 .ui-card {
   border: 1px solid rgba(145, 144, 144, 0.28);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 251, 255, 0.98) 100%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(249, 250, 251, 0.98) 100%);
   box-shadow:
-    0 10px 24px rgba(15, 23, 42, 0.08),
-    0 2px 6px rgba(15, 23, 42, 0.04);
+    0 4px 10px rgba(15, 23, 42, 0.06),
+    0 1px 3px rgba(15, 23, 42, 0.06);
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease;
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .ui-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(34, 76, 135, 0.38);
+  transform: translateY(-2px);
+  border-color: rgba(34, 76, 135, 0.34);
   box-shadow:
-    0 14px 32px rgba(15, 23, 42, 0.11),
-    0 3px 8px rgba(15, 23, 42, 0.05);
+    0 10px 18px rgba(15, 23, 42, 0.12),
+    0 3px 6px rgba(15, 23, 42, 0.08);
 }
 
 .ui-card-static:hover {
   transform: none;
+}
+
+.view-transition-in {
+  animation: viewTransitionIn 280ms ease-out both;
 }
 
 .ui-subcard {
@@ -138,6 +142,18 @@ html {
 [data-pdf-clone='true'] [class*='break'] {
   overflow-wrap: anywhere !important;
   word-break: break-word !important;
+}
+
+@keyframes viewTransitionIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

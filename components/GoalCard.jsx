@@ -19,10 +19,10 @@ const GoalCard = ({
   return (
     <article
       className={clsx(
-        'rounded-xl border p-4 transition-all duration-200',
+        'rounded-xl border p-4 transition-all duration-300',
         isActive
           ? 'border-primary_blue bg-[#224c870d] shadow-md'
-          : 'border-[#9190904d] bg-white hover:-translate-y-0.5 hover:border-[#224c8780] hover:shadow-md'
+          : 'border-[#9190904d] bg-white hover:-translate-y-0.5 hover:border-[#224c8780] hover:shadow-lg'
       )}
       aria-label={`${displayGoalName} goal card`}
       role="group"

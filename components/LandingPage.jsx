@@ -344,7 +344,7 @@ const LandingPage = ({ onStart }) => {
           </div>
         </section>
       ) : (
-        <section className="rounded-2xl border border-dashed border-[#91909080] bg-white p-6 text-center shadow-sm sm:p-7">
+        <section className="rounded-2xl border border-dashed border-[#91909080] bg-white p-6 text-center shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:p-7">
           <div className="mx-auto flex max-w-xl flex-col items-center gap-2">
             <span className="inline-flex rounded-full bg-[#224c8714] p-2 text-primary_blue">
               <MousePointerClick size={18} aria-hidden="true" />

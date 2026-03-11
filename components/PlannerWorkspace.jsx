@@ -314,7 +314,10 @@ const PlannerWorkspace = ({ onBack }) => {
           ) : null}
 
           <div ref={reportRef} className="space-y-6" aria-live="polite">
-            <section className="ui-card ui-card-static rounded-xl bg-gradient-to-r from-white to-[#f8fbff] p-5 sm:p-6">
+            <section
+              data-pdf-section="true"
+              className="ui-card ui-card-static rounded-xl bg-gradient-to-r from-white to-[#f8fbff] p-5 sm:p-6"
+            >
               <h4 className="text-base font-bold text-primary_blue">Report Snapshot</h4>
               <p className="mt-1 text-sm text-text_secondary">
                 Generated on {reportDate}. Assumptions and projections are displayed below.
@@ -323,6 +326,7 @@ const PlannerWorkspace = ({ onBack }) => {
 
             {!selectedGoalValidation.isComplete ? (
               <section
+                data-pdf-section="true"
                 className="rounded-xl border border-[#b4231840] bg-[#fff5f5] p-5 shadow-sm sm:p-6"
                 role="status"
                 aria-label="Goal details completion prompt"
@@ -340,38 +344,50 @@ const PlannerWorkspace = ({ onBack }) => {
             ) : (
               selectedGoalResult && (
                 <div className="space-y-6">
-                <ResultsCard
-                  results={selectedGoalResult}
-                  goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
-                  insights={selectedGoalInsights}
-                />
+                  <div data-pdf-section="true">
+                    <ResultsCard
+                      results={selectedGoalResult}
+                      goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
+                      insights={selectedGoalInsights}
+                    />
+                  </div>
 
-                <GoalInsightsPanel insights={selectedGoalInsights} />
+                  <div data-pdf-section="true">
+                    <GoalInsightsPanel insights={selectedGoalInsights} />
+                  </div>
 
-                <CalculationMethodology goal={selectedGoal} results={selectedGoalResult} />
+                  <div data-pdf-section="true">
+                    <CalculationMethodology goal={selectedGoal} results={selectedGoalResult} />
+                  </div>
 
-                <div className="ui-card rounded-xl p-5 sm:p-6">
-                  <h4 className="mb-4 text-xl font-bold text-primary_blue">Investment Growth Projection</h4>
-                  <GrowthChart data={selectedGoalResult.growthData} />
-                </div>
+                  <div data-pdf-section="true" className="ui-card rounded-xl p-5 sm:p-6">
+                    <h4 className="mb-4 text-xl font-bold text-primary_blue">Investment Growth Projection</h4>
+                    <GrowthChart data={selectedGoalResult.growthData} />
+                  </div>
 
-                <InvestmentTable rows={selectedGoalResult.yearlyBreakdown} />
+                  <div data-pdf-section="true">
+                    <InvestmentTable rows={selectedGoalResult.yearlyBreakdown} />
+                  </div>
 
-                <ScenarioComparison scenarios={scenarioData} />
+                  <div data-pdf-section="true">
+                    <ScenarioComparison scenarios={scenarioData} />
+                  </div>
 
-                <div className="ui-card rounded-xl p-5 sm:p-6">
-                  <h4 className="mb-4 text-xl font-bold text-primary_blue">Goal Timeline Visualization</h4>
-                  <GoalTimeline
-                    years={selectedGoal.yearsToGoal}
-                    timelineData={selectedGoalResult.timelineData}
-                    goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
-                  />
-                </div>
+                  <div data-pdf-section="true" className="ui-card rounded-xl p-5 sm:p-6">
+                    <h4 className="mb-4 text-xl font-bold text-primary_blue">Goal Timeline Visualization</h4>
+                    <GoalTimeline
+                      years={selectedGoal.yearsToGoal}
+                      timelineData={selectedGoalResult.timelineData}
+                      goalName={selectedGoal.goalName?.trim() || 'Untitled Goal'}
+                    />
+                  </div>
                 </div>
               )
             )}
 
-            <Disclaimer />
+            <div data-pdf-section="true">
+              <Disclaimer />
+            </div>
           </div>
         </section>
       </div>

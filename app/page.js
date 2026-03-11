@@ -1,46 +1,68 @@
 'use client';
 
-import { useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useSyncExternalStore } from 'react';
 import LandingPage from '@/components/LandingPage';
 import PlannerWorkspace from '@/components/PlannerWorkspace';
 
-export default function Home() {
-  const [hasStarted, setHasStarted] = useState(false);
-  const shouldReduceMotion = useReducedMotion();
+const VIEW_SESSION_KEY = 'goalwealth:view:planner-open-v1';
+const viewListeners = new Set();
+const noopSubscribe = () => () => {};
 
-  const transitionProps = shouldReduceMotion
-    ? {
-        initial: { opacity: 1 },
-        animate: { opacity: 1 },
-        exit: { opacity: 1 },
-      }
-    : {
-        initial: { opacity: 0, y: 10 },
-        animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -10 },
-      };
+const readPersistedView = () => {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    return window.sessionStorage.getItem(VIEW_SESSION_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const subscribeToView = (listener) => {
+  viewListeners.add(listener);
+  return () => viewListeners.delete(listener);
+};
+
+const persistView = (nextValue) => {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.sessionStorage.setItem(VIEW_SESSION_KEY, nextValue ? 'true' : 'false');
+  } catch {
+    // Ignore storage write errors and keep navigation functional.
+  }
+
+  viewListeners.forEach((listener) => listener());
+};
+
+export default function Home() {
+  const isHydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const hasStarted = useSyncExternalStore(
+    subscribeToView,
+    readPersistedView,
+    () => false
+  );
+
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      {!hasStarted ? (
-        <motion.div
-          key="landing"
-          {...transitionProps}
-          transition={{ duration: 0.35, ease: 'easeOut' }}
-        >
-          <LandingPage onStart={() => setHasStarted(true)} />
-        </motion.div>
-      ) : (
-        <motion.div
-          key="planner"
-          {...transitionProps}
-          transition={{ duration: 0.35, ease: 'easeOut' }}
-        >
-          <PlannerWorkspace onBack={() => setHasStarted(false)} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="min-h-0">
+      <section
+        aria-hidden={hasStarted}
+        className={hasStarted ? 'hidden' : 'view-transition-in block'}
+      >
+        <LandingPage onStart={() => persistView(true)} />
+      </section>
+
+      <section
+        aria-hidden={!hasStarted}
+        className={hasStarted ? 'view-transition-in block' : 'hidden'}
+      >
+        <PlannerWorkspace onBack={() => persistView(false)} />
+      </section>
+    </div>
   );
 }
 

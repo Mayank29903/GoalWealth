@@ -55,7 +55,12 @@ const ScenarioComparison = ({ scenarios = [] }) => {
         Compare required SIP for different return assumptions.
       </p>
 
-      <figure className="mt-6" aria-labelledby="scenario-chart-caption" aria-describedby="scenario-chart-summary">
+      <figure
+        data-pdf-section="true"
+        className="mt-6"
+        aria-labelledby="scenario-chart-caption"
+        aria-describedby="scenario-chart-summary"
+      >
         <figcaption id="scenario-chart-caption" className="mb-2 text-sm font-medium text-text_secondary">
           Required SIP at different annual return assumptions.
         </figcaption>
@@ -84,7 +89,7 @@ const ScenarioComparison = ({ scenarios = [] }) => {
         </div>
       </figure>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div data-pdf-section="true" className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {safeScenarios.map((scenario) => (
           <article
             key={scenario.returnRate}

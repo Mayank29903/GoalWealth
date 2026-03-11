@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { calculateGoalPlan } from '@/utils/goalCalculator';
 import { sanitizeNumber } from '@/utils/financialHelpers';
 
 const DEFAULT_SCENARIOS = [10, 12, 15];
+const SESSION_STORAGE_KEY = 'goalwealth:planner:session-v1';
 const MAX_GOAL_COST = 1e13;
 const MAX_MONTHLY_INCOME = 1e9;
 const MAX_YEARS = 50;
@@ -22,6 +23,17 @@ const clampToSafeNumber = (value, min, max) => {
   const safeValue = sanitizeNumber(value);
   return clamp(safeValue, min, max);
 };
+const getGoalDefaults = () => ({
+  goalName: '',
+  currentCost: '',
+  monthlyIncome: '',
+  yearsToGoal: '',
+  inflationRate: 6,
+  expectedReturn: 12,
+  healthSipThresholdPct: 40,
+  healthShortHorizonYears: 5,
+  healthSafetyGapPct: 2,
+});
 
 const buildGoalInsights = ({ goal, plan }) => {
   if (!goal || !plan) return null;
@@ -92,16 +104,56 @@ const validateGoalInputs = (goal) => {
 
 const createGoal = ({ prefill = false, index = 1 } = {}) => ({
   id: `goal-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-  goalName: prefill ? (index === 1 ? 'Child Education' : `Goal ${index}`) : '',
-  currentCost: prefill ? 1000000 : '',
-  monthlyIncome: prefill ? 150000 : '',
-  yearsToGoal: prefill ? 10 : '',
-  inflationRate: 6,
-  expectedReturn: 12,
-  healthSipThresholdPct: 40,
-  healthShortHorizonYears: 5,
-  healthSafetyGapPct: 2,
+  ...getGoalDefaults(),
+  ...(prefill
+    ? {
+        goalName: index === 1 ? 'Child Education' : `Goal ${index}`,
+        currentCost: 1000000,
+        monthlyIncome: 150000,
+        yearsToGoal: 10,
+      }
+    : {}),
 });
+
+const normalizePersistedGoal = (goal) => ({
+  id:
+    typeof goal?.id === 'string' && goal.id.trim().length > 0
+      ? goal.id
+      : `goal-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  ...getGoalDefaults(),
+  ...goal,
+});
+
+const loadSessionPlannerState = () => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const raw = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed?.goals) || parsed.goals.length === 0) return null;
+
+    const goals = parsed.goals.map(normalizePersistedGoal);
+    const selectedGoalId =
+      typeof parsed.selectedGoalId === 'string' &&
+      goals.some((goal) => goal.id === parsed.selectedGoalId)
+        ? parsed.selectedGoalId
+        : goals[0].id;
+
+    return { goals, selectedGoalId };
+  } catch {
+    return null;
+  }
+};
+
+const getInitialPlannerState = () => {
+  const sessionState = loadSessionPlannerState();
+  if (sessionState) return sessionState;
+
+  const firstGoal = createGoal({ prefill: false, index: 1 });
+  return { goals: [firstGoal], selectedGoalId: firstGoal.id };
+};
 
 const sanitizeGoalInputs = (goal) => ({
   currentCost: clampToSafeNumber(goal.currentCost, 0, MAX_GOAL_COST),
@@ -111,8 +163,22 @@ const sanitizeGoalInputs = (goal) => ({
 });
 
 const useCalculator = () => {
-  const [goals, setGoals] = useState(() => [createGoal({ prefill: false, index: 1 })]);
-  const [selectedGoalId, setSelectedGoalId] = useState(goals[0].id);
+  const [initialPlannerState] = useState(getInitialPlannerState);
+  const [goals, setGoals] = useState(initialPlannerState.goals);
+  const [selectedGoalId, setSelectedGoalId] = useState(initialPlannerState.selectedGoalId);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    try {
+      window.sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        JSON.stringify({ goals, selectedGoalId })
+      );
+    } catch {
+      // Ignore storage failures (private mode/storage limits) and keep app functional.
+    }
+  }, [goals, selectedGoalId]);
 
   const goalPlans = useMemo(
     () =>

@@ -9,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col font-sans bg-background_light text-text_primary antialiased">
+      <body className="min-h-screen flex flex-col overflow-x-hidden font-sans bg-background_light text-text_primary antialiased">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
@@ -28,11 +28,15 @@ export default function RootLayout({ children }) {
             </p>
           </div>
         </header>
-        <main id="main-content" tabIndex={-1} className="container mx-auto w-full flex-1 px-4 py-8">
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="container mx-auto w-full flex-1 overflow-x-clip px-4 py-8"
+        >
           {children}
         </main>
         <footer
-          className="border-t border-[#ffffff1f] bg-text_primary py-6 text-white"
+          className="mt-auto shrink-0 border-t border-[#ffffff1f] bg-text_primary py-6 text-white"
           role="contentinfo"
         >
           <div className="container mx-auto px-4 text-center text-sm">

@@ -1,5 +1,17 @@
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+let pdfDepsPromise;
+
+const loadPdfDeps = async () => {
+  if (!pdfDepsPromise) {
+    pdfDepsPromise = Promise.all([import('html2canvas'), import('jspdf')]).then(
+      ([html2canvasModule, jsPDFModule]) => ({
+        html2canvas: html2canvasModule.default,
+        jsPDF: jsPDFModule.default,
+      })
+    );
+  }
+
+  return pdfDepsPromise;
+};
 
 const createOffscreenClone = (sourceElement, backgroundColor) => {
   const wrapper = document.createElement('div');
@@ -25,10 +37,34 @@ const createOffscreenClone = (sourceElement, backgroundColor) => {
 
   document.body.appendChild(wrapper);
 
-  return wrapper;
+  return { wrapper, clone };
 };
 
-const addCanvasToPdfInSlices = ({ canvas, pdf, margin }) => {
+const getSectionBreakpointsPx = ({ cloneRoot, scale }) => {
+  const sections = Array.from(cloneRoot.querySelectorAll('[data-pdf-section="true"]'));
+  if (sections.length < 2) return [];
+
+  const rootRect = cloneRoot.getBoundingClientRect();
+
+  return sections
+    .map((section) => Math.round((section.getBoundingClientRect().top - rootRect.top) * scale))
+    .filter((value) => Number.isFinite(value) && value > 0)
+    .sort((a, b) => a - b);
+};
+
+const findBestSectionBoundary = ({ breakpointsPx, offsetY, tentativeEndY, minSlicePx }) => {
+  let best = null;
+
+  for (const point of breakpointsPx) {
+    if (point <= offsetY + minSlicePx) continue;
+    if (point > tentativeEndY) break;
+    best = point;
+  }
+
+  return best;
+};
+
+const addCanvasToPdfInSlices = ({ canvas, pdf, margin, breakpointsPx = [] }) => {
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
   const printableWidth = pageWidth - margin * 2;
@@ -41,7 +77,26 @@ const addCanvasToPdfInSlices = ({ canvas, pdf, margin }) => {
   let pageIndex = 0;
 
   while (offsetY < canvas.height) {
-    const sliceHeight = Math.min(pageSliceHeightPx, canvas.height - offsetY);
+    let sliceHeight = Math.min(pageSliceHeightPx, canvas.height - offsetY);
+
+    const hasMoreContent = offsetY + sliceHeight < canvas.height;
+    if (hasMoreContent && breakpointsPx.length > 0) {
+      const minSlicePx = Math.max(Math.floor(pageSliceHeightPx * 0.45), 300);
+      const bestBoundary = findBestSectionBoundary({
+        breakpointsPx,
+        offsetY,
+        tentativeEndY: offsetY + sliceHeight,
+        minSlicePx,
+      });
+
+      if (bestBoundary) {
+        const boundedSlice = bestBoundary - offsetY;
+        if (boundedSlice > 0) {
+          sliceHeight = boundedSlice;
+        }
+      }
+    }
+
     const pageCanvas = document.createElement('canvas');
     pageCanvas.width = canvas.width;
     pageCanvas.height = sliceHeight;
@@ -97,10 +152,13 @@ export const exportElementToPdf = async ({
     throw new Error('Missing export element.');
   }
 
-  const offscreenNode = createOffscreenClone(element, backgroundColor);
+  const { html2canvas, jsPDF } = await loadPdfDeps();
+  const { wrapper, clone } = createOffscreenClone(element, backgroundColor);
 
   try {
-    const canvas = await html2canvas(offscreenNode, {
+    const breakpointsPx = getSectionBreakpointsPx({ cloneRoot: clone, scale });
+
+    const canvas = await html2canvas(wrapper, {
       scale,
       useCORS: true,
       backgroundColor,
@@ -111,9 +169,9 @@ export const exportElementToPdf = async ({
     });
 
     const pdf = new jsPDF('p', 'pt', 'a4');
-    addCanvasToPdfInSlices({ canvas, pdf, margin });
+    addCanvasToPdfInSlices({ canvas, pdf, margin, breakpointsPx });
     pdf.save(filename);
   } finally {
-    offscreenNode.remove();
+    wrapper.remove();
   }
 };
