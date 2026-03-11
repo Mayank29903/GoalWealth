@@ -182,7 +182,7 @@ const FinancialHealthScore = ({
 
   return (
     <motion.section
-      className="ui-card ui-card-static flex min-h-[600px] flex-col rounded-xl p-4"
+      className="ui-card ui-card-static flex min-h-150 flex-col rounded-xl p-4"
       aria-labelledby="financial-health-score-heading"
       initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
@@ -207,7 +207,7 @@ const FinancialHealthScore = ({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(scoreData.score)}
-          className="relative h-[132px] w-[132px] rounded-full p-2"
+          className="relative h-33 w-33 rounded-full p-2"
           style={{
             background: `conic-gradient(${tone.ring} ${progressDegrees}deg, #e2e8f0 ${progressDegrees}deg)`,
           }}

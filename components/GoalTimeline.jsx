@@ -6,7 +6,7 @@ const GoalTimeline = ({ years, timelineData = [], goalName }) => {
 
   return (
     <div className="overflow-x-auto pb-2" aria-label="Goal timeline visualization">
-      <div className="relative min-w-[560px] pt-6 pb-2 sm:min-w-0">
+      <div className="relative min-w-140 pt-6 pb-2 sm:min-w-0">
         <div className="absolute top-8 left-0 h-1 w-full rounded bg-[#9190904d]"></div>
         <div className="absolute top-8 left-0 h-1 w-full rounded bg-primary_blue"></div>
 
@@ -17,7 +17,7 @@ const GoalTimeline = ({ years, timelineData = [], goalName }) => {
             return (
               <article
                 key={marker.year}
-                className="z-10 flex max-w-[130px] flex-1 flex-col items-center text-center"
+                className="z-10 flex max-w-32.5 flex-1 flex-col items-center text-center"
               >
                 <div
                   className={`h-4 w-4 rounded-full border-2 ${isGoalYear ? 'border-accent_red bg-accent_red' : 'border-primary_blue bg-white'}`}

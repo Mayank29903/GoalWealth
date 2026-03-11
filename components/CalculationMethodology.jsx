@@ -73,7 +73,7 @@ const CalculationMethodology = ({ goal, results }) => {
             <span className="font-medium text-text_primary">Formula:</span>{' '}
             <code className="font-semibold">FV = Present Cost x (1 + Inflation rate)^Years</code>
           </p>
-          <p className="mt-2 text-sm text-text_secondary break-all [overflow-wrap:anywhere]">
+          <p className="mt-2 text-sm text-text_secondary break-all wrap-anywhere">
             <span className="font-medium text-text_primary">Applied:</span>{' '}
             {formatCurrency(presentCost)} x (1 + {formatRate(inflationRate)} / 100)^{yearsToGoal}{' '}
             = {formatCurrency(inflatedGoalValue)}
@@ -98,14 +98,14 @@ const CalculationMethodology = ({ goal, results }) => {
             <code className="font-semibold">Required SIP = FV x r / [((1 + r)^n - 1) x (1 + r)]</code>
           </p>
           {monthlyRate > 0 ? (
-            <p className="mt-2 text-sm text-text_secondary break-all [overflow-wrap:anywhere]">
+            <p className="mt-2 text-sm text-text_secondary break-all wrap-anywhere">
               <span className="font-medium text-text_primary">Applied:</span>{' '}
               {formatCurrency(inflatedGoalValue)} x {formatDecimal(monthlyRate)} / [((1 +{' '}
               {formatDecimal(monthlyRate)})^{totalMonths} - 1) x (1 + {formatDecimal(monthlyRate)}
               )] = {formatCurrency(requiredMonthlySIP)}
             </p>
           ) : (
-            <p className="mt-2 text-sm text-text_secondary break-all [overflow-wrap:anywhere]">
+            <p className="mt-2 text-sm text-text_secondary break-all wrap-anywhere">
               <span className="font-medium text-text_primary">Zero-return fallback:</span> when
               return is 0%, SIP = FV / n = {formatCurrency(inflatedGoalValue)} / {totalMonths} ={' '}
               {formatCurrency(requiredMonthlySIP)}

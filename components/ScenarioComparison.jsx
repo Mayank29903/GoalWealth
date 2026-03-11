@@ -99,11 +99,11 @@ const ScenarioComparison = ({ scenarios = [] }) => {
               Return {formatPercentage(scenario.returnRate)}
             </h3>
             <p className="mt-2 text-xs text-text_secondary">Required SIP</p>
-            <p className="text-lg font-bold leading-tight text-text_primary break-all [overflow-wrap:anywhere]">
+            <p className="text-lg font-bold leading-tight text-text_primary break-all wrap-anywhere">
               {formatCurrency(scenario.requiredMonthlySIP)}
             </p>
             <p className="mt-3 text-xs text-text_secondary">Estimated Returns</p>
-            <p className="font-semibold leading-tight text-accent_red break-all [overflow-wrap:anywhere]">
+            <p className="font-semibold leading-tight text-accent_red break-all wrap-anywhere">
               {formatCurrency(scenario.estimatedReturns)}
             </p>
           </article>

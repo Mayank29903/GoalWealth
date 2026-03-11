@@ -47,7 +47,7 @@ const KPICards = ({ cards = [] }) => {
               </span>
             </div>
             <p
-              className={`mt-2 text-2xl font-bold leading-tight break-all [overflow-wrap:anywhere] ${card.valueClass}`}
+              className={`mt-2 text-2xl font-bold leading-tight break-all wrap-anywhere ${card.valueClass}`}
             >
               <AnimatedMetricValue value={card.value} valueType={card.valueType} />
             </p>

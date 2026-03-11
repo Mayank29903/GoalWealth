@@ -282,7 +282,7 @@ const PlannerWorkspace = ({ onBack }) => {
         <section className="space-y-6 lg:col-span-8" aria-label="Goal analysis and report">
           <div className="ui-card flex flex-col gap-4 rounded-xl p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div className="min-w-0">
-              <h3 className="text-xl font-bold text-primary_blue break-words">
+              <h3 className="text-xl font-bold text-primary_blue wrap-break-word">
                 {(selectedGoal?.goalName?.trim() || 'Untitled Goal')} Plan
               </h3>
               <p className="text-sm text-text_secondary">
@@ -316,7 +316,7 @@ const PlannerWorkspace = ({ onBack }) => {
           <div ref={reportRef} className="space-y-6" aria-live="polite">
             <section
               data-pdf-section="true"
-              className="ui-card ui-card-static rounded-xl bg-gradient-to-r from-white to-[#f8fbff] p-5 sm:p-6"
+              className="ui-card ui-card-static rounded-xl bg-linear-to-r from-white to-[#f8fbff] p-5 sm:p-6"
             >
               <h4 className="text-base font-bold text-primary_blue">Report Snapshot</h4>
               <p className="mt-1 text-sm text-text_secondary">

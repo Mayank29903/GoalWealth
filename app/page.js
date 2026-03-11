@@ -29,7 +29,6 @@ const persistView = (nextValue) => {
   try {
     window.sessionStorage.setItem(VIEW_SESSION_KEY, nextValue ? 'true' : 'false');
   } catch {
-    // Ignore storage write errors and keep navigation functional.
   }
 
   viewListeners.forEach((listener) => listener());

@@ -71,13 +71,13 @@ const GoalCard = ({
       <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
         <div className="ui-subcard min-w-0 rounded-md p-2">
           <dt className="text-text_secondary">Monthly SIP</dt>
-          <dd className="font-semibold leading-tight text-primary_blue break-all [overflow-wrap:anywhere]">
+          <dd className="font-semibold leading-tight text-primary_blue break-all wrap-anywhere">
             {isConfigured ? formatCurrency(result?.requiredMonthlySIP || 0) : '--'}
           </dd>
         </div>
         <div className="ui-subcard min-w-0 rounded-md p-2">
           <dt className="text-text_secondary">Goal Value</dt>
-          <dd className="font-semibold leading-tight text-text_primary break-all [overflow-wrap:anywhere]">
+          <dd className="font-semibold leading-tight text-text_primary break-all wrap-anywhere">
             {isConfigured ? formatCurrency(result?.inflatedGoalValue || 0) : '--'}
           </dd>
         </div>
