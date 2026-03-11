@@ -1,29 +1,98 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import {
   ArrowRight,
   CalendarClock,
+  CheckCircle2,
+  MousePointerClick,
   ShieldCheck,
   Sparkles,
   Target,
   TrendingUp,
 } from 'lucide-react';
+import { formatCurrency } from '@/utils/financialHelpers';
 
 const highlights = [
   {
+    id: 'goal-first',
     title: 'Goal-First Strategy',
-    description: 'Build SIP plans around real-life milestones, not random return chasing.',
+    description: 'Start with a real goal, then the calculator estimates your SIP.',
     icon: Target,
+    intro:
+      'Pick a life goal first. The calculator inflates today\'s cost and tells you how much to invest every month.',
+    beginnerExamples: [
+      {
+        label: 'Education Starter',
+        goalName: 'Child Education',
+        currentCost: 1000000,
+        years: 10,
+        inflationRate: 6,
+        returnRate: 12,
+      },
+      {
+        label: 'Home Renovation',
+        goalName: 'Home Renovation',
+        currentCost: 500000,
+        years: 4,
+        inflationRate: 5,
+        returnRate: 10,
+      },
+    ],
   },
   {
+    id: 'scenario-intelligence',
     title: 'Scenario Intelligence',
-    description: 'Compare inflation and return assumptions before you commit your money.',
+    description: 'Try different return assumptions and compare SIP impact.',
     icon: TrendingUp,
+    intro:
+      'A small return change can change SIP a lot. Use this to plan with safer expectations.',
+    beginnerExamples: [
+      {
+        label: 'House Fund',
+        goalName: 'House Down Payment',
+        currentCost: 2500000,
+        years: 10,
+        inflationRate: 5.5,
+        returnRate: 12,
+        comparisonReturn: 9,
+      },
+      {
+        label: 'Car Upgrade',
+        goalName: 'Car Purchase',
+        currentCost: 800000,
+        years: 5,
+        inflationRate: 5,
+        returnRate: 10,
+        comparisonReturn: 8,
+      },
+    ],
   },
   {
+    id: 'actionable-output',
     title: 'Actionable Output',
-    description: 'Get a clean downloadable plan you can review and execute with clarity.',
+    description: 'Get clear numbers and a downloadable plan you can execute.',
     icon: ShieldCheck,
+    intro:
+      'You get a simple action summary: monthly SIP, future goal value, and expected returns.',
+    beginnerExamples: [
+      {
+        label: 'Emergency Corpus',
+        goalName: 'Emergency Fund',
+        currentCost: 600000,
+        years: 3,
+        inflationRate: 5,
+        returnRate: 9,
+      },
+      {
+        label: 'Wedding Budget',
+        goalName: 'Wedding Goal',
+        currentCost: 1200000,
+        years: 7,
+        inflationRate: 6,
+        returnRate: 11,
+      },
+    ],
   },
 ];
 
@@ -39,7 +108,62 @@ const impactStats = [
   { label: 'Export Ready', value: 'PDF' },
 ];
 
+const calculateSampleProjection = ({ currentCost, years, inflationRate, returnRate }) => {
+  const inflatedGoalValue = currentCost * Math.pow(1 + inflationRate / 100, years);
+  const months = years * 12;
+  const monthlyRate = returnRate / 1200;
+
+  const requiredMonthlySIP =
+    monthlyRate <= 0
+      ? inflatedGoalValue / months
+      : (inflatedGoalValue * monthlyRate) /
+        ((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate));
+
+  const totalInvestedAmount = requiredMonthlySIP * months;
+  const estimatedReturns = inflatedGoalValue - totalInvestedAmount;
+
+  return {
+    inflatedGoalValue,
+    requiredMonthlySIP,
+    totalInvestedAmount,
+    estimatedReturns,
+  };
+};
+
+const formatRate = (value) =>
+  `${new Intl.NumberFormat('en-IN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(value)}%`;
+
 const LandingPage = ({ onStart }) => {
+  const [activeHighlightId, setActiveHighlightId] = useState(null);
+
+  const activeHighlight = useMemo(
+    () => highlights.find((item) => item.id === activeHighlightId) ?? null,
+    [activeHighlightId]
+  );
+
+  const activeExamples = useMemo(() => {
+    if (!activeHighlight) return [];
+
+    return activeHighlight.beginnerExamples.map((example) => {
+      const primary = calculateSampleProjection(example);
+      const comparison = example.comparisonReturn
+        ? calculateSampleProjection({
+            ...example,
+            returnRate: example.comparisonReturn,
+          })
+        : null;
+
+      return {
+        ...example,
+        primary,
+        comparison,
+      };
+    });
+  }, [activeHighlight]);
+
   return (
     <div className="space-y-8">
       <section className="relative overflow-hidden rounded-3xl border border-[#224c8740] bg-gradient-to-br from-white via-[#eef4fa] to-[#fcefed] p-8 shadow-xl lg:p-12">
@@ -124,11 +248,19 @@ const LandingPage = ({ onStart }) => {
       <section className="grid gap-4 md:grid-cols-3" aria-label="Key capabilities">
         {highlights.map((highlight) => {
           const Icon = highlight.icon;
+          const isActive = activeHighlightId === highlight.id;
 
           return (
-            <article
-              key={highlight.title}
-              className="rounded-2xl border border-[#9190904d] bg-white p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
+            <button
+              key={highlight.id}
+              type="button"
+              onClick={() =>
+                setActiveHighlightId((prev) => (prev === highlight.id ? null : highlight.id))
+              }
+              aria-pressed={isActive}
+              className={`rounded-2xl border bg-white p-6 text-left shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary_blue ${
+                isActive ? 'border-primary_blue ring-1 ring-[#224c8759]' : 'border-[#9190904d]'
+              }`}
             >
               <span className="inline-flex rounded-xl bg-[#224c8717] p-2 text-primary_blue">
                 <Icon size={18} aria-hidden="true" />
@@ -137,13 +269,95 @@ const LandingPage = ({ onStart }) => {
               <p className="mt-2 text-sm leading-relaxed text-text_secondary">
                 {highlight.description}
               </p>
-            </article>
+              <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-text_secondary">
+                {isActive ? 'Click again to hide examples' : 'Click to view simple examples'}
+              </p>
+            </button>
           );
         })}
       </section>
+
+      {activeHighlight ? (
+        <section
+          className="rounded-2xl border border-[#224c8733] bg-white p-6 shadow-md sm:p-7"
+          aria-live="polite"
+        >
+          <h3 className="text-xl font-bold text-primary_blue">
+            Simple Examples: {activeHighlight.title}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-text_secondary">{activeHighlight.intro}</p>
+
+          <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            {activeExamples.map((example) => (
+              <article
+                key={example.label}
+                className="rounded-xl border border-[#91909040] bg-card_background p-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-text_secondary">
+                  {example.label}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-primary_blue">{example.goalName}</p>
+                <ul className="mt-3 space-y-1 text-sm text-text_primary">
+                  <li>
+                    <strong>Today Cost:</strong> {formatCurrency(example.currentCost)}
+                  </li>
+                  <li>
+                    <strong>Timeline:</strong> {example.years} years
+                  </li>
+                  <li>
+                    <strong>Assumptions:</strong> Inflation {formatRate(example.inflationRate)},
+                    Return {formatRate(example.returnRate)}
+                  </li>
+                  <li>
+                    <strong>Future Goal Value:</strong>{' '}
+                    {formatCurrency(example.primary.inflatedGoalValue)}
+                  </li>
+                  <li>
+                    <strong>Monthly SIP Needed:</strong>{' '}
+                    {formatCurrency(example.primary.requiredMonthlySIP)}
+                  </li>
+                </ul>
+
+                {example.comparison ? (
+                  <p className="mt-3 rounded-md border border-[#b4231840] bg-[#b423180d] p-2 text-xs text-text_secondary">
+                    If return is {formatRate(example.comparisonReturn)} instead of{' '}
+                    {formatRate(example.returnRate)}, SIP changes to{' '}
+                    <strong>{formatCurrency(example.comparison.requiredMonthlySIP)}</strong>.
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              onClick={onStart}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary_blue px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1b3c6c]"
+            >
+              <CheckCircle2 size={16} aria-hidden="true" />
+              Try These In Planner
+            </button>
+            <p className="text-xs text-text_secondary">
+              Click the same card again to hide examples.
+            </p>
+          </div>
+        </section>
+      ) : (
+        <section className="rounded-2xl border border-dashed border-[#91909080] bg-white p-6 text-center shadow-sm sm:p-7">
+          <div className="mx-auto flex max-w-xl flex-col items-center gap-2">
+            <span className="inline-flex rounded-full bg-[#224c8714] p-2 text-primary_blue">
+              <MousePointerClick size={18} aria-hidden="true" />
+            </span>
+            <h3 className="text-lg font-bold text-primary_blue">No Example Open Yet</h3>
+            <p className="text-sm text-text_secondary">
+              Click any section card above to view simple beginner examples. Click again to hide.
+            </p>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
 
 export default LandingPage;
-

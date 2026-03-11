@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
           Skip to main content
         </a>
         <header
-          className="relative overflow-hidden bg-gradient-to-r from-[#173761] via-primary_blue to-[#2b5ea8] py-7 text-white shadow-lg"
+          className="relative overflow-hidden bg-linear-to-r from-[#173761] via-primary_blue to-[#2b5ea8] py-7 text-white shadow-lg"
           role="banner"
         >
           <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-[#ffffff26] blur-3xl" />

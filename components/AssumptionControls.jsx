@@ -36,7 +36,7 @@ const AssumptionControls = ({ goal, onFieldChange }) => {
               value={goal.inflationRate}
               onChange={(e) => onFieldChange('inflationRate', e.target.value)}
               className={`w-full rounded border p-2 text-text_primary transition-colors focus:border-primary_blue focus:ring-2 focus:ring-primary_blue ${
-                isInflationInvalid ? 'border-[#b42318]' : 'border-[#91909080]'
+                isInflationInvalid ? 'border-accent_red' : 'border-[#91909080]'
               }`}
               inputMode="decimal"
               required
@@ -67,7 +67,7 @@ const AssumptionControls = ({ goal, onFieldChange }) => {
               value={goal.expectedReturn}
               onChange={(e) => onFieldChange('expectedReturn', e.target.value)}
               className={`w-full rounded border p-2 text-text_primary transition-colors focus:border-primary_blue focus:ring-2 focus:ring-primary_blue ${
-                isReturnInvalid ? 'border-[#b42318]' : 'border-[#91909080]'
+                isReturnInvalid ? 'border-accent_red' : 'border-[#91909080]'
               }`}
               inputMode="decimal"
               required
